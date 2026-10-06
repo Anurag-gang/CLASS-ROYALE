@@ -1,0 +1,91 @@
+# Class Royale Machine Learning Data Manifest
+# Reproducible manifest of acquired educational datasets, checksums, and normalization metadata.
+
+manifest_version: "1.0.0"
+schema_version: "canonical_v1.0"
+processing_version: "2.0.0"
+generated_at: "2026-10-06T01:45:00Z"
+privacy_policy: >
+  Dataset identifiers are external research identifiers and are NOT Class Royale user identities.
+  No personal identifiable information (PII) is processed or retained.
+
+datasets:
+  mathe:
+    dataset: "MathE — Assessing Mathematics Learning in Higher Education"
+    version: "1.0.0"
+    source: "UCI Machine Learning Repository (Dataset 1031)"
+    source_url: "https://archive.ics.uci.edu/dataset/1031/assessing+mathematics+learning+in+higher+education"
+    download_url: "https://archive.ics.uci.edu/static/public/1031/dataset+for+assessing+mathematics+learning+in+higher+education.zip"
+    download_date: "2026-10-06"
+    checksum_sha256: "403752d2bb708264ff6b62e5c281566ab196435a68d145de25c86432c1781e7a"
+    archive_file: "datasets/raw/mathe/mathe_dataset.zip"
+    raw_file: "datasets/raw/mathe/MathE dataset (4).csv"
+    raw_size_bytes: 1057461
+    raw_rows: 9546
+    raw_columns: 8
+    license: "Creative Commons Attribution 4.0 International (CC BY 4.0)"
+    license_url: "https://creativecommons.org/licenses/by/4.0/"
+    status: "VALIDATED_AND_NORMALIZED"
+    normalized_outputs:
+      parquet: "datasets/processed/mathe/mathe_normalized.parquet"
+      csv: "datasets/processed/mathe/mathe_normalized.csv"
+    normalized_records: 9546
+    unique_students: 372
+    unique_questions: 833
+    unique_topics: 14
+
+  ednet_contents:
+    dataset: "EdNet Content Metadata (Questions and Lectures)"
+    version: "1.0.0"
+    source: "Riiid! AI Research"
+    source_url: "https://github.com/riiid/ednet"
+    download_url: "https://drive.usercontent.google.com/download?id=117aYJAWG3GU48suS66NPaB82HwFj6xWS&export=download&confirm=t"
+    download_date: "2026-10-06"
+    checksum_sha256: "aa910a0436d9dbac0ba232f55e27b37ad8d39da285fcf15f1c1eb5d064be98e7"
+    archive_file: "datasets/raw/ednet/contents/EdNet-Contents.zip"
+    questions_file: "datasets/raw/ednet/contents/contents/questions.csv"
+    lectures_file: "datasets/raw/ednet/contents/contents/lectures.csv"
+    total_questions: 13169
+    total_lectures: 1021
+    license: "Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)"
+    license_url: "https://creativecommons.org/licenses/by-nc/4.0/"
+    status: "VALIDATED"
+
+  ednet_kt1:
+    dataset: "EdNet-KT1 Knowledge Tracing Student Interactions"
+    version: "1.0.0"
+    source: "Riiid! AI Research"
+    source_url: "https://github.com/riiid/ednet"
+    download_url: "https://drive.usercontent.google.com/download?id=1AmGcOs5U31wIIqvthn9ARqJMrMTFTcaw&export=download&confirm=t"
+    download_date: "2026-10-06"
+    checksum_sha256: "b07675f12e8ba6c10eb30bfbf412a83354cb43d9a9cce0802c67b25e79ffbe14"
+    archive_file: "datasets/raw/ednet/kt1/EdNet-KT1.zip"
+    archive_size_bytes: 1201163816
+    total_student_files_in_archive: 784309
+    license: "Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)"
+    license_url: "https://creativecommons.org/licenses/by-nc/4.0/"
+    status: "VALIDATED_AND_NORMALIZED"
+    normalized_outputs:
+      cohort_parquet: "datasets/processed/ednet_kt1/ednet_kt1_normalized.parquet"
+      partitions_dir: "datasets/processed/ednet_kt1/partitions/"
+    cohort_records: 88235
+    cohort_students: 500
+    cohort_questions: 11332
+
+  assistments:
+    dataset: "ASSISTments Longitudinal Student Response Dataset"
+    version: "2012-2013 / 2009-2010"
+    source: "Worcester Polytechnic Institute (WPI)"
+    source_url: "https://sites.google.com/site/assistmentsdata/home"
+    license: "Academic Research Use / Institutional Agreement"
+    status: "DOWNLOAD_REQUIRES_MANUAL_ACTION"
+    requires_auth: true
+
+  oulad:
+    dataset: "Open University Learning Analytics Dataset (OULAD)"
+    version: "2017"
+    source: "The Open University Knowledge Media Institute"
+    source_url: "https://analyse.kmi.open.ac.uk/open_dataset"
+    license: "Creative Commons Attribution 4.0 International (CC BY 4.0) with Data Agreement"
+    status: "DOWNLOAD_REQUIRES_MANUAL_ACTION"
+    requires_auth: true

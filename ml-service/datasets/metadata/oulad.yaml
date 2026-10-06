@@ -1,0 +1,24 @@
+dataset_name: "OULAD"
+full_name: "Open University Learning Analytics Dataset"
+category: "SECONDARY"
+source: "The Open University (UK) Knowledge Media Institute"
+source_url: "https://analyse.kmi.open.ac.uk/open_dataset"
+official_repository: "https://analyse.kmi.open.ac.uk/open_dataset"
+download_url: "https://analyse.kmi.open.ac.uk/open_dataset/download"
+download_timestamp: null
+license: "Creative Commons Attribution 4.0 International (CC BY 4.0) with Data Agreement"
+license_url: "https://analyse.kmi.open.ac.uk/open_dataset/terms"
+citation: "Kuzilek, J., Hlosta, M., & Zdrahal, Z. (2017). Open University Learning Analytics Dataset. Scientific Data, 4, 170171."
+status: "DOWNLOAD_REQUIRES_MANUAL_ACTION"
+requires_auth: true
+is_automatic: false
+source_type: "REAL"
+intended_use: "Course dropout and modular university VLE interaction analysis"
+notes: >
+  Official portal requires submitting an interactive institutional data agreement form.
+  Direct headless programmatic downloading returns the agreement form.
+manual_download_instructions:
+  - "1. Visit official download portal: https://analyse.kmi.open.ac.uk/open_dataset/download"
+  - "2. Complete registration agreement with your academic institution details."
+  - "3. Alternatively download via Kaggle (requires Kaggle API key): https://www.kaggle.com/datasets/anlgrbz/student-demographics-online-education-dataoulad"
+  - "4. Place extracted tables (studentInfo.csv, studentVle.csv, etc.) into ml-service/datasets/raw/oulad/."

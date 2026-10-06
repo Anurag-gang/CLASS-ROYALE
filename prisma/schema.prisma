@@ -1,0 +1,530 @@
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// -------------------------------------------------------------
+// USER & IDENTITY
+// -------------------------------------------------------------
+
+model User {
+  id           String          @id @default(cuid())
+  username     String          @unique
+  email        String          @unique
+  passwordHash String
+  role         String          @default("STUDENT") // STUDENT, FACULTY, ADMIN, SUPER_ADMIN
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+
+  profile               Profile?
+  progress              UserProgress[]
+  quizAttempts          QuizAttempt[]
+  userQuests            UserQuest[]
+  achievements          UserAchievement[]
+  xpHistory             XPTransaction[]
+  crConversations       CRConversation[]
+  crQuizzes             CRQuiz[]
+  crStudyPlans          CRStudyPlan[]
+  crRevisionPacks       CRRevisionPack[]
+
+  // Academic Relations
+  teachingClasses       ClassFaculty[]
+  enrolledClasses       ClassMember[]
+  courseEnrollments     CourseEnrollment[]
+  teachingCourses       CourseFaculty[]
+  topicMasteries        TopicMastery[]
+  receivedInterventions StudentIntervention[] @relation("StudentInterventions")
+  createdInterventions  StudentIntervention[] @relation("FacultyInterventions")
+  importBatches         ImportHistory[]
+  auditLogs             AuditLog[]
+  createdClans          Clan[]                @relation("ClanCreator")
+  clanMemberships       ClanMember[]
+}
+
+model Profile {
+  id                   String    @id @default(cuid())
+  userId               String    @unique
+  user                 User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Academic Identifiers
+  name                 String?
+  universityId         String?   // University UUID or identifier
+  studentId            String?   // e.g. "500120167"
+  facultyId            String?   // e.g. "FAC-1002"
+  department           String?   // e.g. "Computer Applications"
+  program              String?   // e.g. "BCA"
+  semester             Int?      // e.g. 5
+  section              String?   // e.g. "A"
+
+  // 8-Bit Gamification Progression
+  level                Int       @default(1)
+  xp                   Int       @default(0)
+  rank                 String    @default("Novice Apprentice")
+  streak               Int       @default(1)
+  streakLastDate       DateTime  @default(now())
+  questsCompleted      Int       @default(0)
+  achievementsUnlocked Int       @default(0)
+  avatar               String    @default("🧙‍♂️")
+  title                String    @default("Pixel Initiate")
+}
+
+// -------------------------------------------------------------
+// ACADEMIC HIERARCHY
+// -------------------------------------------------------------
+
+model University {
+  id          String       @id @default(cuid())
+  name        String
+  code        String       @unique
+  departments Department[]
+  createdAt   DateTime     @default(now())
+}
+
+model Department {
+  id           String      @id @default(cuid())
+  universityId String
+  university   University  @relation(fields: [universityId], references: [id], onDelete: Cascade)
+  name         String
+  code         String      // e.g. "CA" for Computer Applications
+  programs     Program[]
+  classes      Class[]
+  createdAt    DateTime    @default(now())
+}
+
+model Program {
+  id             String      @id @default(cuid())
+  departmentId   String
+  department     Department  @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+  name           String      // e.g. "Bachelor of Computer Applications"
+  code           String      // e.g. "BCA"
+  totalSemesters Int         @default(6)
+  classes        Class[]
+  createdAt      DateTime    @default(now())
+}
+
+model AcademicTerm {
+  id        String   @id @default(cuid())
+  name      String   // e.g. "Fall 2026-27"
+  year      String   // e.g. "2026-2027"
+  isCurrent Boolean  @default(true)
+  classes   Class[]
+  createdAt DateTime @default(now())
+}
+
+model Class {
+  id             String         @id @default(cuid())
+  name           String         // e.g. "BCA — Semester 5A"
+  code           String         @unique // e.g. "BCA-SEM5-A"
+  departmentId   String?
+  department     Department?    @relation(fields: [departmentId], references: [id])
+  programId      String?
+  program        Program?       @relation(fields: [programId], references: [id])
+  academicTermId String?
+  academicTerm   AcademicTerm?  @relation(fields: [academicTermId], references: [id])
+  semester       Int            @default(1)
+  section        String         @default("A")
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+
+  members        ClassMember[]
+  faculty        ClassFaculty[]
+  courses        ClassCourse[]
+  quizzes        ClassQuiz[]
+  interventions  StudentIntervention[]
+  importBatches  ImportHistory[]
+}
+
+model ClassMember {
+  id         String   @id @default(cuid())
+  classId    String
+  class      Class    @relation(fields: [classId], references: [id], onDelete: Cascade)
+  studentId  String
+  student    User     @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  status     String   @default("ACTIVE") // ACTIVE, INACTIVE, DROPPED
+  joinedAt   DateTime @default(now())
+
+  @@unique([classId, studentId])
+}
+
+model ClassFaculty {
+  id         String   @id @default(cuid())
+  classId    String
+  class      Class    @relation(fields: [classId], references: [id], onDelete: Cascade)
+  facultyId  String
+  faculty    User     @relation(fields: [facultyId], references: [id], onDelete: Cascade)
+  role       String   @default("PRIMARY_INSTRUCTOR") // PRIMARY_INSTRUCTOR, CO_INSTRUCTOR, TA
+  assignedAt DateTime @default(now())
+
+  @@unique([classId, facultyId])
+}
+
+model ClassCourse {
+  id        String   @id @default(cuid())
+  classId   String
+  class     Class    @relation(fields: [classId], references: [id], onDelete: Cascade)
+  courseId  String
+  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@unique([classId, courseId])
+}
+
+model CourseFaculty {
+  id        String   @id @default(cuid())
+  courseId  String
+  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  facultyId String
+  faculty   User     @relation(fields: [facultyId], references: [id], onDelete: Cascade)
+  role      String   @default("COORDINATOR") // COORDINATOR, INSTRUCTOR, TA
+
+  @@unique([courseId, facultyId])
+}
+
+model CourseEnrollment {
+  id         String   @id @default(cuid())
+  courseId   String
+  course     Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  studentId  String
+  student    User     @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  status     String   @default("ENROLLED") // ENROLLED, COMPLETED, AUDITING
+  enrolledAt DateTime @default(now())
+
+  @@unique([courseId, studentId])
+}
+
+model TopicMastery {
+  id            String   @id @default(cuid())
+  studentId     String
+  student       User     @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  topic         String   // e.g. "Data Structures", "Algorithms", "DBMS", "Operating Systems", "Computer Networks"
+  category      String   @default("CS")
+  accuracy      Float    @default(0.0) // 0 to 100
+  attemptsCount Int      @default(0)
+  trend         String   @default("STABLE") // IMPROVING, DECLINING, STABLE
+  lastAssessed  DateTime @default(now())
+
+  @@unique([studentId, topic])
+}
+
+model ClassQuiz {
+  id          String    @id @default(cuid())
+  classId     String
+  class       Class     @relation(fields: [classId], references: [id], onDelete: Cascade)
+  quizId      String
+  title       String
+  topic       String
+  dueAt       DateTime?
+  assignedAt  DateTime  @default(now())
+}
+
+model StudentIntervention {
+  id          String   @id @default(cuid())
+  classId     String?
+  class       Class?   @relation(fields: [classId], references: [id], onDelete: SetNull)
+  studentId   String
+  student     User     @relation("StudentInterventions", fields: [studentId], references: [id], onDelete: Cascade)
+  facultyId   String
+  faculty     User     @relation("FacultyInterventions", fields: [facultyId], references: [id], onDelete: Cascade)
+  type        String   // ASSIGN_QUEST, ASSIGN_QUIZ, SEND_RECOMMENDATION
+  title       String
+  message     String
+  status      String   @default("PENDING") // PENDING, ACKNOWLEDGED, COMPLETED
+  createdAt   DateTime @default(now())
+}
+
+model ImportHistory {
+  id                 String   @id @default(cuid())
+  classId            String?
+  class              Class?   @relation(fields: [classId], references: [id], onDelete: SetNull)
+  facultyId          String
+  faculty            User     @relation(fields: [facultyId], references: [id], onDelete: Cascade)
+  fileName           String
+  totalRecords       Int
+  successfulRecords  Int
+  failedRecords      Int
+  status             String   @default("COMPLETED") // COMPLETED, PARTIAL, FAILED
+  reportJson         String?  // JSON string breakdown
+  createdAt          DateTime @default(now())
+}
+
+model AuditLog {
+  id           String   @id @default(cuid())
+  actorId      String?
+  actor        User?    @relation(fields: [actorId], references: [id], onDelete: SetNull)
+  action       String   // STUDENT_IMPORTED, CLASS_CREATED, QUIZ_ASSIGNED, etc.
+  targetType   String   // Class, User, Quiz, Course
+  targetId     String?
+  metadataJson String?
+  ipAddress    String?
+  createdAt    DateTime @default(now())
+}
+
+// -------------------------------------------------------------
+// EXISTING GAMIFIED LEARNING ENGINE & COURSES
+// -------------------------------------------------------------
+
+model Subject {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  code        String   @default("CS-201")
+  title       String
+  description String
+  icon        String
+  difficulty  String   @default("Intermediate")
+  accentColor String   @default("#8b5cf6")
+  order       Int      @default(0)
+  courses     Course[]
+}
+
+model Course {
+  id          String             @id @default(cuid())
+  subjectId   String
+  subject     Subject            @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  slug        String             @unique
+  title       String
+  description String
+  difficulty  String             @default("Novice")
+  xpReward    Int                @default(300)
+  order       Int                @default(0)
+  lessons     Lesson[]
+  questions   QuizQuestion[]
+  classes     ClassCourse[]
+  faculty     CourseFaculty[]
+  enrollments CourseEnrollment[]
+}
+
+model Lesson {
+  id          String         @id @default(cuid())
+  courseId    String
+  course      Course         @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  slug        String
+  title       String
+  description String
+  content     String
+  xpReward    Int            @default(100)
+  order       Int            @default(0)
+  progress    UserProgress[]
+
+  @@unique([courseId, slug])
+}
+
+model QuizQuestion {
+  id          String   @id @default(cuid())
+  courseId    String
+  course      Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  question    String
+  optionsJson String   // JSON string array of options: ["O(n)", "O(log n)", ...]
+  answerIndex Int
+  explanation String
+  xpReward    Int      @default(50)
+  order       Int      @default(0)
+}
+
+model QuizAttempt {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  courseId  String
+  score     Int
+  total     Int
+  perfect   Boolean  @default(false)
+  xpEarned  Int
+  createdAt DateTime @default(now())
+}
+
+model Quest {
+  id          String      @id @default(cuid())
+  title       String
+  description String
+  xpReward    Int         @default(500)
+  difficulty  Int         @default(3) // 1 to 5
+  durationMin Int         @default(15)
+  category    String      @default("CS")
+  isDaily     Boolean     @default(false)
+  requirement String      // e.g. "COMPLETE_LESSON", "PERFECT_QUIZ", "EARN_XP"
+  targetCount Int         @default(1)
+  userQuests  UserQuest[]
+}
+
+model UserQuest {
+  id          String    @id @default(cuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  questId     String
+  quest       Quest     @relation(fields: [questId], references: [id], onDelete: Cascade)
+  progress    Int       @default(0)
+  completed   Boolean   @default(false)
+  completedAt DateTime?
+
+  @@unique([userId, questId])
+}
+
+model UserProgress {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lessonId    String
+  lesson      Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  completed   Boolean  @default(true)
+  completedAt DateTime @default(now())
+
+  @@unique([userId, lessonId])
+}
+
+model Achievement {
+  id          String            @id @default(cuid())
+  code        String            @unique
+  title       String
+  description String
+  icon        String
+  xpReward    Int               @default(250)
+  rarity      String            @default("COMMON") // COMMON, RARE, EPIC, LEGENDARY
+  users       UserAchievement[]
+}
+
+model UserAchievement {
+  id            String      @id @default(cuid())
+  userId        String
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  achievementId String
+  achievement   Achievement @relation(fields: [achievementId], references: [id], onDelete: Cascade)
+  unlockedAt    DateTime    @default(now())
+
+  @@unique([userId, achievementId])
+}
+
+model XPTransaction {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  amount      Int
+  source      String   // LESSON_COMPLETE, QUIZ_COMPLETE, QUEST_CLAIM, STREAK_BONUS, ACHIEVEMENT_UNLOCK, CR_LESSON, CR_QUIZ
+  description String
+  createdAt   DateTime @default(now())
+}
+
+// -------------------------------------------------------------
+// CR AI LEARNING COMPANION
+// -------------------------------------------------------------
+
+model CRConversation {
+  id             String      @id @default(cuid())
+  userId         String
+  user           User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title          String      @default("New Study Quest")
+  subjectContext String?
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+  messages       CRMessage[]
+}
+
+model CRMessage {
+  id             String         @id @default(cuid())
+  conversationId String
+  conversation   CRConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  sender         String         // "cr" | "user"
+  type           String         @default("message") // "message" | "lesson" | "quiz" | "study_plan" | "revision" | "recommendation"
+  text           String
+  payloadJson    String?        // Structured component data if applicable
+  createdAt      DateTime       @default(now())
+}
+
+model CRQuiz {
+  id             String           @id @default(cuid())
+  userId         String
+  user           User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title          String
+  topic          String
+  difficulty     String           @default("ADAPTIVE")
+  totalQuestions Int              @default(5)
+  score          Int              @default(0)
+  isCompleted    Boolean          @default(false)
+  xpAwarded      Int              @default(0)
+  accuracy       Float            @default(0)
+  weakAreasJson  String?          // JSON array of weak subtopics detected
+  recommendation String?
+  createdAt      DateTime         @default(now())
+  questions      CRQuizQuestion[]
+}
+
+model CRQuizQuestion {
+  id           String  @id @default(cuid())
+  quizId       String
+  quiz         CRQuiz  @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  question     String
+  optionsJson  String  // JSON string array of options: ["A", "B", "C", "D"]
+  answerIndex  Int
+  explanation  String
+  subtopic     String  @default("Core Concept")
+  userSelected Int?
+  isCorrect    Boolean @default(false)
+  order        Int     @default(0)
+}
+
+model CRStudyPlan {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  subject    String
+  targetDate String?
+  planJson   String   // JSON serialized days & study schedule
+  createdAt  DateTime @default(now())
+}
+
+model CRRevisionPack {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  topic     String
+  summary   String
+  cardsJson String   // JSON serialized flashcards & formulas
+  createdAt DateTime @default(now())
+}
+
+// -------------------------------------------------------------
+// CLANS & PEER LEARNING COHORTS
+// -------------------------------------------------------------
+
+model Clan {
+  id          String         @id @default(cuid())
+  name        String         // e.g. "UPES — DevOps Batch 3" or "DSA Placement Prep"
+  description String?
+  category    String         @default("CLASSROOM") // CLASSROOM, STUDY_GROUP, COMPETITIVE
+  joinCode    String         @unique // e.g. "CR-DEVOPS-26"
+  isPrivate   Boolean        @default(false)
+  creatorId   String
+  creator     User           @relation("ClanCreator", fields: [creatorId], references: [id], onDelete: Cascade)
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  members     ClanMember[]
+  activities  ClanActivity[]
+}
+
+model ClanMember {
+  id        String   @id @default(cuid())
+  clanId    String
+  clan      Clan     @relation(fields: [clanId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role      String   @default("MEMBER") // LEADER, MEMBER
+  joinedAt  DateTime @default(now())
+
+  @@unique([clanId, userId])
+}
+
+model ClanActivity {
+  id          String    @id @default(cuid())
+  clanId      String
+  clan        Clan      @relation(fields: [clanId], references: [id], onDelete: Cascade)
+  title       String
+  description String?
+  type        String    @default("QUIZ") // QUIZ, ANNOUNCEMENT, CHALLENGE
+  targetId    String?   // e.g. courseId or quizId
+  dueAt       DateTime?
+  createdAt   DateTime  @default(now())
+}
+

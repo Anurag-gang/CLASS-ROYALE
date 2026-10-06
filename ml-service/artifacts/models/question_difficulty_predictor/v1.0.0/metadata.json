@@ -1,0 +1,52 @@
+{
+  "model_name": "question_difficulty_predictor",
+  "model_version": "v1.0.0",
+  "algorithm": "logistic_regression",
+  "is_trained": true,
+  "training_dataset": "mathe_normalized.parquet",
+  "dataset_version": null,
+  "feature_schema_version": "v1.0",
+  "training_timestamp": "2026-10-05T20:56:37.558207+00:00",
+  "validation_metrics": {
+    "accuracy": 0.6350574712643678,
+    "precision": 0.6291377006416753,
+    "recall": 0.6189718364197531,
+    "f1_score": 0.6182595551716692,
+    "confusion_matrix": [
+      [
+        370,
+        398
+      ],
+      [
+        237,
+        735
+      ]
+    ],
+    "roc_auc": 0.6560236089677641,
+    "log_loss": 0.6468590798873975,
+    "brier_score": 0.227431793081305
+  },
+  "test_metrics": {
+    "accuracy": 0.6386213887480994,
+    "precision": 0.618881940427993,
+    "recall": 0.6053512509209725,
+    "f1_score": 0.6057128859034444,
+    "confusion_matrix": [
+      [
+        915,
+        263
+      ],
+      [
+        450,
+        345
+      ]
+    ],
+    "roc_auc": 0.666975259207056,
+    "log_loss": 0.6356326895032613,
+    "brier_score": 0.22210169180137404
+  },
+  "hyperparameters": {},
+  "python_version": "3.13.3",
+  "sklearn_version": "1.8.0",
+  "preprocessing_version": "v1.0"
+}

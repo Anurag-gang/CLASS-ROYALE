@@ -1,0 +1,17 @@
+dataset_name: MathE
+full_name: Assessing Mathematics Learning in Higher Education
+source: UCI Machine Learning Repository
+source_url: https://archive.ics.uci.edu/dataset/1031/assessing+mathematics+learning+in+higher+education
+official_repository: https://archive.ics.uci.edu/dataset/1031/assessing+mathematics+learning+in+higher+education
+download_url: https://archive.ics.uci.edu/static/public/1031/dataset+for+assessing+mathematics+learning+in+higher+education.zip
+download_timestamp: '2026-10-05T20:00:25.144321+00:00'
+license: CC BY 4.0
+license_url: https://creativecommons.org/licenses/by/4.0/
+file_size_bytes: 45240
+checksum_sha256: 403752d2bb708264ff6b62e5c281566ab196435a68d145de25c86432c1781e7a
+archive_path: C:\Users\amita\Documents\antigravity\fervent-kepler\ml-service\datasets\raw\mathe\mathe_dataset.zip
+extracted_file_count: 1
+source_type: REAL
+intended_use: Class Royale supervised adaptive learning foundation
+notes: Acquired from official source without modification. Raw files preserved in
+  C:\Users\amita\Documents\antigravity\fervent-kepler\ml-service\datasets\raw\mathe.

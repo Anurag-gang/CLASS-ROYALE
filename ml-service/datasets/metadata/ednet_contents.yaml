@@ -1,0 +1,17 @@
+dataset_name: EdNet-Contents
+full_name: EdNet Question and Lecture Content Metadata
+source: Riiid AI Research (Official Google Drive Mirror from GitHub repo)
+source_url: https://github.com/riiid/ednet
+official_repository: https://github.com/riiid/ednet
+download_url: https://drive.usercontent.google.com/download?id=117aYJAWG3GU48suS66NPaB82HwFj6xWS&export=download&confirm=t
+download_timestamp: '2026-10-05T20:00:26.709204+00:00'
+license: CC BY-NC 4.0
+license_url: https://creativecommons.org/licenses/by-nc/4.0/
+file_size_bytes: 173976
+checksum_sha256: aa910a0436d9dbac0ba232f55e27b37ad8d39da285fcf15f1c1eb5d064be98e7
+archive_path: C:\Users\amita\Documents\antigravity\fervent-kepler\ml-service\datasets\raw\ednet\contents\EdNet-Contents.zip
+extracted_file_count: 10
+source_type: REAL
+intended_use: Class Royale supervised adaptive learning foundation
+notes: Acquired from official source without modification. Raw files preserved in
+  C:\Users\amita\Documents\antigravity\fervent-kepler\ml-service\datasets\raw\ednet\contents.

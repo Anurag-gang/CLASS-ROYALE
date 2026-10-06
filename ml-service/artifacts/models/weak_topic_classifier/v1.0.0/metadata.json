@@ -1,0 +1,62 @@
+{
+  "model_name": "weak_topic_classifier",
+  "model_version": "v1.0.0",
+  "algorithm": "random_forest",
+  "is_trained": true,
+  "training_dataset": "mathe_normalized.parquet",
+  "dataset_version": null,
+  "feature_schema_version": "v1.0",
+  "training_timestamp": "2026-10-05T20:56:42.944449+00:00",
+  "validation_metrics": {
+    "accuracy": 1.0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1_score": 1.0,
+    "confusion_matrix": [
+      [
+        39,
+        0,
+        0
+      ],
+      [
+        0,
+        34,
+        0
+      ],
+      [
+        0,
+        0,
+        17
+      ]
+    ],
+    "roc_auc": 1.0
+  },
+  "test_metrics": {
+    "accuracy": 1.0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1_score": 1.0,
+    "confusion_matrix": [
+      [
+        61,
+        0,
+        0
+      ],
+      [
+        0,
+        35,
+        0
+      ],
+      [
+        0,
+        0,
+        7
+      ]
+    ],
+    "roc_auc": 1.0
+  },
+  "hyperparameters": {},
+  "python_version": "3.13.3",
+  "sklearn_version": "1.8.0",
+  "preprocessing_version": "v1.0"
+}

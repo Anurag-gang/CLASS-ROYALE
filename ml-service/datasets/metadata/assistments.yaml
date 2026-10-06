@@ -1,0 +1,24 @@
+dataset_name: "ASSISTments"
+full_name: "ASSISTments Longitudinal Student Response Dataset"
+category: "SECONDARY"
+source: "Worcester Polytechnic Institute (WPI)"
+source_url: "https://sites.google.com/site/assistmentsdata/home"
+official_repository: "https://sites.google.com/site/assistmentsdata/home"
+download_url: null
+download_timestamp: null
+license: "Academic Research Use / Institutional Agreement"
+license_url: "https://sites.google.com/site/assistmentsdata/home"
+citation: "Feng, M., Heffernan, N.T., & Koedinger, K.R. (2009). Addressing the assessment challenge with an online system that tutors as it assesses. User Modeling and User-Adapted Interaction, 19(3), 243-266."
+status: "DOWNLOAD_REQUIRES_MANUAL_ACTION"
+requires_auth: true
+is_automatic: false
+source_type: "REAL"
+intended_use: "Secondary benchmarking for student response modeling"
+notes: >
+  Direct unauthenticated automated downloads are disabled by WPI Google Sites host.
+  Academic researchers must request access via the official portal.
+manual_download_instructions:
+  - "1. Visit official repository: https://sites.google.com/site/assistmentsdata/home"
+  - "2. Navigate to '2012-13 School Data' or '2009-2010 Data'."
+  - "3. Submit researcher registration / agreement form."
+  - "4. Place downloaded CSV/zip into ml-service/datasets/raw/assistments/."

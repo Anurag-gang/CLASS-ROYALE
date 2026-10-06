@@ -1,0 +1,28 @@
+{
+  "model_name": "question_recommender",
+  "model_version": "v1.0.0",
+  "algorithm": "zpd_flow_scoring",
+  "is_trained": true,
+  "training_dataset": "PENDING_REAL_DATASET_INTEGRATION",
+  "dataset_version": null,
+  "feature_schema_version": "v1.0",
+  "training_timestamp": "2026-10-05T20:56:43.064927+00:00",
+  "validation_metrics": {
+    "ndcg_at_5": 1.0,
+    "precision_at_5": 0.8,
+    "simulated_query_count": 5
+  },
+  "test_metrics": {
+    "ndcg_at_5": 1.0,
+    "precision_at_5": 0.8,
+    "simulated_query_count": 5
+  },
+  "hyperparameters": {
+    "target_success_prob": 0.65,
+    "novelty_decay_factor": 0.5,
+    "weak_topic_boost": 0.3
+  },
+  "python_version": "3.13.3",
+  "sklearn_version": "1.8.0",
+  "preprocessing_version": "v1.0"
+}

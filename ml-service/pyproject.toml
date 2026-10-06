@@ -1,0 +1,38 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "class-royale-ml"
+version = "0.1.0"
+description = "Dataset-agnostic Supervised Machine Learning & Adaptive Learning Engine for Class Royale"
+readme = "README.md"
+requires-python = ">=3.11"
+authors = [
+    { name = "Class Royale Engineering Team" }
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Operating System :: OS Independent",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Education",
+]
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+addopts = "-ra -q --strict-markers"
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+filterwarnings = [
+    "ignore::DeprecationWarning",
+    "ignore::UserWarning",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["app*", "training*", "evaluation*"]

@@ -1,0 +1,16 @@
+dataset_name: EdNet-KT1
+full_name: EdNet Knowledge Tracing Level 1 Student Interactions
+source: Riiid AI Research (Official Google Drive Mirror from GitHub repo)
+source_url: https://github.com/riiid/ednet
+official_repository: https://github.com/riiid/ednet
+download_url: https://drive.usercontent.google.com/download?id=1AmGcOs5U31wIIqvthn9ARqJMrMTFTcaw&export=download&confirm=t
+download_timestamp: '2026-10-05T20:04:17.799965+00:00'
+license: CC BY-NC 4.0
+license_url: https://creativecommons.org/licenses/by-nc/4.0/
+file_size_bytes: 1201163816
+checksum_sha256: 0d13933f90201c5101c7fe8659e44474fa049e3fb93181a8ba6fb3e63267b535
+archive_path: C:\Users\amita\Documents\antigravity\fervent-kepler\ml-service\datasets\raw\ednet\kt1\EdNet-KT1.zip
+source_type: REAL
+intended_use: Class Royale supervised adaptive learning foundation
+notes: Acquired from official Riiid EdNet Google Drive mirror. Large-scale student
+  interaction log.

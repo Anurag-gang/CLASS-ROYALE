@@ -1,0 +1,67 @@
+# Official Dataset Licenses for Class Royale Machine Learning Pipeline
+# Source of truth for copyright, permissible usage, attribution requirements, and commercial constraints.
+
+licenses:
+  ednet_kt1:
+    dataset: "EdNet-KT1"
+    official_source: "https://github.com/riiid/ednet"
+    publisher: "Riiid! AI Research (Seoul, South Korea)"
+    paper: "EdNet: A Large-Scale Hierarchical Dataset in Education (Choi et al., 2020, arXiv:1912.03072)"
+    license: "Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)"
+    license_url: "https://creativecommons.org/licenses/by-nc/4.0/"
+    allowed_usage: "Research, academic experimentation, pedagogical benchmarking, model development"
+    attribution_requirement: "Must credit Choi et al. (2020) and Riiid! AI Research"
+    commercial_use: false
+    redistribution: true
+    research_use: true
+    notes: >
+      EdNet is strictly CC BY-NC 4.0. It may be used for internal research, offline training,
+      and non-commercial educational benchmarking in Class Royale. Direct redistribution of raw data
+      for commercial licensing is prohibited.
+
+  mathe:
+    dataset: "MathE — Assessing Mathematics Learning in Higher Education"
+    official_source: "https://archive.ics.uci.edu/dataset/1031/assessing+mathematics+learning+in+higher+education"
+    publisher: "UCI Machine Learning Repository / Polytechnic Institute of Cavado and Ave / University of Minho"
+    authors: "Irene Brito, Eliana Costa e Silva, et al. (2024)"
+    license: "Creative Commons Attribution 4.0 International (CC BY 4.0)"
+    license_url: "https://creativecommons.org/licenses/by/4.0/"
+    allowed_usage: "Academic, commercial, modification, and integration with attribution"
+    attribution_requirement: "Must cite Brito et al. (2024) and the UCI Machine Learning Repository"
+    commercial_use: true
+    redistribution: true
+    research_use: true
+    notes: >
+      MathE is published under open CC BY 4.0, permitting research, transformation,
+      and educational integration with appropriate author attribution.
+
+  assistments:
+    dataset: "ASSISTments Longitudinal Student Response Dataset"
+    official_source: "https://sites.google.com/site/assistmentsdata/home"
+    publisher: "Worcester Polytechnic Institute (WPI)"
+    license: "Academic Research Use / Institutional Agreement"
+    license_url: "https://sites.google.com/site/assistmentsdata/home"
+    allowed_usage: "Restricted to authorized academic researchers"
+    attribution_requirement: "Citation of WPI ASSISTments publications"
+    commercial_use: false
+    redistribution: false
+    research_use: true
+    notes: >
+      Direct unauthenticated automated downloads are disabled on the official host.
+      Access requires individual academic registration. Marked as DOWNLOAD_REQUIRES_MANUAL_ACTION.
+
+  oulad:
+    dataset: "Open University Learning Analytics Dataset (OULAD)"
+    official_source: "https://analyse.kmi.open.ac.uk/open_dataset"
+    publisher: "The Open University (UK)"
+    paper: "Kuzilek, J., Hlosta, M., & Zdrahal, Z. (2017). Open University Learning Analytics Dataset. Scientific Data, 4, 170171."
+    license: "Creative Commons Attribution 4.0 International (CC BY 4.0) with Data Agreement"
+    license_url: "https://analyse.kmi.open.ac.uk/open_dataset/terms"
+    allowed_usage: "Research and analytics upon registration"
+    attribution_requirement: "Must cite Kuzilek et al. (2017)"
+    commercial_use: false
+    redistribution: false
+    research_use: true
+    notes: >
+      Official website requires completing an interactive terms agreement form before serving download.
+      Marked as DOWNLOAD_REQUIRES_MANUAL_ACTION.
