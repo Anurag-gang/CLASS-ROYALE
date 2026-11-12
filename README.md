@@ -32,7 +32,7 @@ Create a `.env` file in the root directory:
 DATABASE_URL="file:./dev.db"
 
 # Session Secret
-JWT_SECRET="class-royale-secret-key-8bit-retro-game-session-2026"
+JWT_SECRET="xxxx"
 
 # Next.js Environment
 NODE_ENV="development"
