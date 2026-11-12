@@ -21,19 +21,10 @@ export function ScrollStrokeSection() {
 
       {/* Top Narrative Anchor */}
       <div className="sticky top-28 z-20 flex w-fit flex-col items-center justify-center gap-4 text-center px-4">
-        <div className="flex items-center gap-2 font-mono text-xs text-cyan-400 uppercase tracking-widest font-semibold">
-          <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
-          <span>ADAPTIVE LEARNING TRAJECTORY</span>
-        </div>
-
         <h2 className="font-condensed font-black text-5xl sm:text-7xl md:text-8xl lg:text-9xl uppercase tracking-tight text-white max-w-4xl leading-[0.88] cr-heading-hover cursor-default">
           THE STROKE THAT <br />
           <span className="text-cyan-400">TRACES YOUR MASTERY</span>
         </h2>
-
-        <p className="font-body text-xs sm:text-sm text-zinc-400 uppercase tracking-wider max-w-xl">
-          Watch the adaptive learning path calibrate in real time across core engineering topics.
-        </p>
       </div>
 
       {/* The Dynamic Motion LinePath SVG */}
@@ -47,24 +38,19 @@ export function ScrollStrokeSection() {
       {/* Bottom Transition Showcase */}
       <div className="mt-auto mb-20 z-20 w-full max-w-6xl p-8 sm:p-12 bg-[#08090e]/90 border border-white/10 backdrop-blur-xl">
         <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-8">
-          <div className="space-y-2">
-            <span className="font-mono text-[10px] text-cyan-400 uppercase tracking-widest block font-bold">
-              KNOWLEDGE ARCHITECTURE // CLASS ROYALE
-            </span>
+          <div>
             <h3 className="font-condensed font-black text-4xl sm:text-6xl text-white uppercase leading-none">
               ZERO RANDOMNESS. <br />
               PURE RETRIEVAL.
             </h3>
           </div>
 
-          <div className="grid grid-cols-2 gap-6 text-xs font-mono text-white/60 uppercase">
+          <div className="grid grid-cols-2 gap-8 text-xs font-mono text-white/60 uppercase">
             <div>
-              <span className="text-white block font-bold text-sm">6 SECTORS</span>
-              <span>FULL SYLLABUS COVERAGE</span>
+              <span className="text-white block font-bold text-lg font-condensed">6 SECTORS</span>
             </div>
             <div>
-              <span className="text-cyan-400 block font-bold text-sm">REAL-TIME</span>
-              <span>BAYESIAN MASTERY CALIBRATION</span>
+              <span className="text-cyan-400 block font-bold text-lg font-condensed">REAL-TIME</span>
             </div>
           </div>
         </div>

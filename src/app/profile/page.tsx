@@ -87,7 +87,7 @@ export default function ProfilePage() {
     return (
       <div className="min-h-[70vh] flex flex-col items-center justify-center space-y-3">
         <span className="w-6 h-6 rounded-full border-2 border-cyan-400 border-t-transparent animate-spin" />
-        <span className="font-mono text-xs text-zinc-400">Loading student profile...</span>
+        <span className="font-inter text-xs text-zinc-400 font-medium">Loading student profile...</span>
       </div>
     );
   }
@@ -95,7 +95,7 @@ export default function ProfilePage() {
   if (!data?.profile) {
     return (
       <div className="max-w-xl mx-auto py-20 px-4 text-center space-y-4">
-        <h2 className="font-display font-bold text-xl text-white">PROFILE NOT FOUND</h2>
+        <h2 className="font-condensed font-bold text-2xl text-white">PROFILE NOT FOUND</h2>
       </div>
     );
   }
@@ -118,7 +118,7 @@ export default function ProfilePage() {
             {/* Identity details */}
             <div className="space-y-1.5">
               <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
-                <h1 className="font-display font-extrabold text-2xl sm:text-3xl text-white tracking-tight">
+                <h1 className="font-condensed font-bold text-2xl sm:text-3xl text-white tracking-tight">
                   {profile.name}
                 </h1>
                 <span className="font-mono text-[10px] px-2 py-0.5 rounded-full bg-cyan-950 border border-cyan-800 text-cyan-300">
@@ -126,12 +126,12 @@ export default function ProfilePage() {
                 </span>
               </div>
 
-              <p className="font-body text-xs sm:text-sm text-cyan-300 font-medium">
+              <p className="font-inter text-xs sm:text-sm text-cyan-300 font-medium">
                 {profile.title} • {profile.department}
               </p>
 
-              <div className="flex flex-wrap items-center justify-center sm:justify-start gap-3 pt-1 text-xs text-zinc-400 font-mono">
-                <span>ID: <strong className="text-zinc-200">{profile.studentId}</strong></span>
+              <div className="flex flex-wrap items-center justify-center sm:justify-start gap-3 pt-1 text-xs text-zinc-400 font-inter">
+                <span>ID: <strong className="text-zinc-200 font-mono">{profile.studentId}</strong></span>
                 <span>•</span>
                 <span>Semester {profile.semester} (Sec {profile.section})</span>
                 <span>•</span>
@@ -149,7 +149,7 @@ export default function ProfilePage() {
               retroSound.playClick();
               setEditing(!editing);
             }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-900/80 border border-slate-700 hover:border-cyan-400/60 text-xs font-semibold text-zinc-200 transition-colors"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-900/80 border border-slate-700 hover:border-cyan-400/60 text-xs font-inter font-semibold text-zinc-200 transition-colors"
           >
             <Edit3 className="w-3.5 h-3.5 text-cyan-400" />
             <span>{editing ? "Cancel Editing" : "Edit Profile"}</span>
@@ -237,7 +237,7 @@ export default function ProfilePage() {
               <button
                 type="submit"
                 disabled={saving}
-                className="px-5 py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-display font-bold text-xs uppercase tracking-wider transition-colors disabled:opacity-50"
+                className="px-5 py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-inter font-bold text-xs uppercase tracking-wider transition-colors disabled:opacity-50"
               >
                 {saving ? "Saving Changes..." : "Save Profile"}
               </button>
@@ -246,7 +246,7 @@ export default function ProfilePage() {
         )}
 
         {saveMessage && (
-          <div className="mt-4 p-3 rounded-xl bg-emerald-950/60 border border-emerald-500/40 text-xs text-emerald-300 flex items-center gap-2">
+          <div className="mt-4 p-3 rounded-xl bg-emerald-950/60 border border-emerald-500/40 text-xs font-inter text-emerald-300 flex items-center gap-2">
             <CheckCircle2 className="w-4 h-4 text-emerald-400" />
             <span>{saveMessage}</span>
           </div>
@@ -257,50 +257,50 @@ export default function ProfilePage() {
       <section aria-label="Academic Performance Overview" className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Average Mastery */}
         <div className="p-5 rounded-2xl bg-slate-900/50 border border-slate-800/80 space-y-2">
-          <div className="flex items-center justify-between text-xs text-zinc-400 font-medium">
+          <div className="flex items-center justify-between text-xs text-zinc-400 font-inter font-medium">
             <span>Average Mastery</span>
             <TrendingUp className="w-4 h-4 text-emerald-400" />
           </div>
-          <div className="text-3xl font-extrabold text-emerald-400 tracking-tight">
+          <div className="text-3xl font-extrabold text-emerald-400 tracking-tight font-mono">
             {metrics.averageMastery}%
           </div>
-          <p className="text-[11px] text-zinc-500 font-mono">Curricular proficiency</p>
+          <p className="text-[11px] text-zinc-400 font-inter">Curricular proficiency</p>
         </div>
 
         {/* Quiz Accuracy */}
         <div className="p-5 rounded-2xl bg-slate-900/50 border border-slate-800/80 space-y-2">
-          <div className="flex items-center justify-between text-xs text-zinc-400 font-medium">
+          <div className="flex items-center justify-between text-xs text-zinc-400 font-inter font-medium">
             <span>Quiz Accuracy</span>
             <CheckCircle2 className="w-4 h-4 text-cyan-400" />
           </div>
-          <div className="text-3xl font-extrabold text-white tracking-tight">
+          <div className="text-3xl font-extrabold text-white tracking-tight font-mono">
             {metrics.accuracyPercent}%
           </div>
-          <p className="text-[11px] text-zinc-500 font-mono">Average active retrieval</p>
+          <p className="text-[11px] text-zinc-400 font-inter">Average active retrieval</p>
         </div>
 
         {/* Quizzes Completed */}
         <div className="p-5 rounded-2xl bg-slate-900/50 border border-slate-800/80 space-y-2">
-          <div className="flex items-center justify-between text-xs text-zinc-400 font-medium">
+          <div className="flex items-center justify-between text-xs text-zinc-400 font-inter font-medium">
             <span>Quizzes Solved</span>
             <BookOpen className="w-4 h-4 text-violet-400" />
           </div>
-          <div className="text-3xl font-extrabold text-white tracking-tight">
+          <div className="text-3xl font-extrabold text-white tracking-tight font-mono">
             {metrics.quizzesCompleted}
           </div>
-          <p className="text-[11px] text-zinc-500 font-mono">Verified assessments</p>
+          <p className="text-[11px] text-zinc-400 font-inter">Verified assessments</p>
         </div>
 
         {/* Badges Earned */}
         <div className="p-5 rounded-2xl bg-slate-900/50 border border-slate-800/80 space-y-2">
-          <div className="flex items-center justify-between text-xs text-zinc-400 font-medium">
+          <div className="flex items-center justify-between text-xs text-zinc-400 font-inter font-medium">
             <span>Subject Badges</span>
             <Award className="w-4 h-4 text-amber-400" />
           </div>
-          <div className="text-3xl font-extrabold text-amber-400 tracking-tight">
+          <div className="text-3xl font-extrabold text-amber-400 tracking-tight font-mono">
             {metrics.masteredBadgesCount}
           </div>
-          <p className="text-[11px] text-zinc-500 font-mono">
+          <p className="text-[11px] text-zinc-400 font-inter">
             {metrics.inProgressBadgesCount} in progress
           </p>
         </div>
@@ -313,26 +313,26 @@ export default function ProfilePage() {
             <div className="space-y-1.5">
               <div className="flex items-center gap-2">
                 <Users className="w-4 h-4 text-violet-400" />
-                <span className="text-[11px] font-mono uppercase text-violet-300 tracking-wider">
+                <span className="text-[11px] font-inter uppercase text-violet-300 font-semibold tracking-wider">
                   Academic Clan Affiliation
                 </span>
               </div>
-              <h2 className="font-display font-bold text-xl text-white">
+              <h2 className="font-condensed font-bold text-xl text-white">
                 {clan.name}
               </h2>
-              <div className="flex items-center gap-3 text-xs text-zinc-400 font-mono">
+              <div className="flex items-center gap-3 text-xs text-zinc-400 font-inter">
                 <span>Role: <strong className="text-cyan-300">{clan.role}</strong></span>
                 <span>•</span>
                 <span>Standing: <strong className="text-amber-400">Rank #{clan.rank}</strong> of {clan.totalMembers}</span>
                 <span>•</span>
-                <span>Code: <code className="text-zinc-300">{clan.joinCode}</code></span>
+                <span>Code: <code className="text-zinc-300 font-mono">{clan.joinCode}</code></span>
               </div>
             </div>
 
             <Link
               href={`/clans/${clan.id}`}
               onClick={() => retroSound.playClick()}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-violet-600 hover:bg-violet-500 text-white font-display font-bold text-xs uppercase tracking-wider transition-colors shadow-[0_0_15px_rgba(139,92,246,0.2)]"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-violet-600 hover:bg-violet-500 text-white font-inter font-semibold text-xs tracking-wider transition-colors shadow-[0_0_15px_rgba(139,92,246,0.2)]"
             >
               <span>Clan Workspace</span>
               <ArrowRight className="w-3.5 h-3.5" />
@@ -348,13 +348,13 @@ export default function ProfilePage() {
             <h2 className="font-display font-bold text-lg text-white">
               Subject Mastery Matrix
             </h2>
-            <p className="text-xs text-zinc-400">
+            <p className="text-xs text-zinc-400 font-inter">
               Empirical mastery index across foundational engineering curriculum.
             </p>
           </div>
           <Link
             href="/subjects"
-            className="text-xs font-semibold text-cyan-400 hover:text-cyan-300 flex items-center gap-1"
+            className="text-xs font-inter font-semibold text-cyan-400 hover:text-cyan-300 flex items-center gap-1"
           >
             Explore Syllabus <ArrowRight className="w-3.5 h-3.5" />
           </Link>
@@ -372,7 +372,7 @@ export default function ProfilePage() {
                     {sm.icon}
                   </div>
                   <span
-                    className={`font-mono text-[10px] px-2 py-0.5 rounded-full font-semibold border ${
+                    className={`font-inter text-[10px] px-2 py-0.5 rounded-full font-semibold border ${
                       sm.status === "MASTERED"
                         ? "bg-amber-950/60 border-amber-500/40 text-amber-300"
                         : sm.status === "IN_PROGRESS"
@@ -386,16 +386,16 @@ export default function ProfilePage() {
 
                 <div className="mt-3">
                   <span className="font-mono text-[10px] text-zinc-500 uppercase">{sm.code}</span>
-                  <h3 className="font-display font-bold text-sm text-white mt-0.5">
+                  <h3 className="font-condensed font-bold text-base text-white mt-0.5">
                     {sm.title}
                   </h3>
                 </div>
               </div>
 
               <div className="space-y-2 pt-2 border-t border-slate-800/60">
-                <div className="flex items-center justify-between text-xs font-mono">
+                <div className="flex items-center justify-between text-xs font-inter">
                   <span className="text-zinc-400">Mastery</span>
-                  <span className="font-bold text-white">{sm.mastery}%</span>
+                  <span className="font-mono font-bold text-white">{sm.mastery}%</span>
                 </div>
                 <div className="w-full bg-slate-800 rounded-full h-1.5 overflow-hidden">
                   <div
@@ -416,10 +416,10 @@ export default function ProfilePage() {
       {/* 5. Recent Quiz Attempts */}
       <section className="space-y-4">
         <div>
-          <h2 className="font-display font-bold text-lg text-white">
+          <h2 className="font-condensed font-bold text-lg text-white">
             Recent Assessments &amp; Quizzes
           </h2>
-          <p className="text-xs text-zinc-400">
+          <p className="text-xs text-zinc-400 font-inter">
             Audit log of completed quiz challenges and retrieval drills.
           </p>
         </div>
@@ -436,11 +436,11 @@ export default function ProfilePage() {
                     <span className="font-mono text-[10px] px-2 py-0.5 rounded bg-slate-800 text-zinc-400 uppercase">
                       {quiz.subjectTitle}
                     </span>
-                    <h3 className="text-xs sm:text-sm font-semibold text-white">
+                    <h3 className="text-xs sm:text-sm font-inter font-semibold text-white">
                       {quiz.courseTitle}
                     </h3>
                   </div>
-                  <p className="text-[11px] text-zinc-500 font-mono">
+                  <p className="text-[11px] text-zinc-400 font-inter">
                     Completed: {new Date(quiz.createdAt).toLocaleDateString([], { month: "short", day: "numeric", year: "numeric" })}
                   </p>
                 </div>
@@ -471,12 +471,12 @@ export default function ProfilePage() {
           <div className="p-8 rounded-2xl border border-dashed border-slate-800 bg-slate-900/30 text-center space-y-3">
             <BookOpen className="w-8 h-8 text-zinc-600 mx-auto" />
             <h3 className="text-sm font-semibold text-white">No Quizzes Completed Yet</h3>
-            <p className="text-xs text-zinc-400 max-w-sm mx-auto">
+            <p className="text-xs text-zinc-400 font-inter max-w-sm mx-auto">
               Start with an engineering subject quiz to begin tracking your mastery and accuracy.
             </p>
             <Link
               href="/subjects"
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-cyan-500 text-slate-950 font-display font-bold text-xs uppercase"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-cyan-500 text-slate-950 font-inter font-bold text-xs uppercase"
             >
               Browse Subjects <ArrowRight className="w-3.5 h-3.5" />
             </Link>

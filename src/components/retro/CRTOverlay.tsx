@@ -6,7 +6,7 @@ import { Monitor } from "lucide-react";
 
 export const CRTOverlay: React.FC = () => {
   const pathname = usePathname();
-  const [enabled, setEnabled] = useState(true);
+  const [enabled, setEnabled] = useState(false);
 
   if (pathname === "/") {
     return null;

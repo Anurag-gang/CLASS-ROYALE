@@ -35,7 +35,7 @@ export default function SubjectsPage() {
     return (
       <div className="min-h-[70vh] flex flex-col items-center justify-center space-y-3">
         <span className="w-6 h-6 rounded-full border-2 border-violet-500 border-t-transparent animate-spin" />
-        <span className="font-hud text-xs text-zinc-400">Loading engineering subjects...</span>
+        <span className="font-inter text-xs text-zinc-400 font-medium">Loading engineering subjects...</span>
       </div>
     );
   }
@@ -44,18 +44,10 @@ export default function SubjectsPage() {
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-16 space-y-10">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-white/[0.08]">
-        <div className="space-y-2">
-          <span className="font-mono text-xs text-cyan-400 uppercase tracking-widest font-semibold flex items-center gap-2">
-            <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
-            ENGINEERING SYLLABUS MAP
-          </span>
+        <div>
           <h1 className="font-condensed font-black text-4xl sm:text-5xl uppercase tracking-tight text-white">
             Subjects &amp; Topics
           </h1>
-          <p className="font-body text-xs sm:text-sm text-zinc-400 max-w-xl">
-            Explore database-driven engineering subjects. Complete diagnostic quizzes, strengthen weak areas,
-            and earn verified subject mastery badges.
-          </p>
         </div>
 
         {/* Filter Controls */}
@@ -120,12 +112,12 @@ export default function SubjectsPage() {
                   <h2 className="font-display font-bold text-base text-white group-hover:text-cyan-300 transition-colors mt-0.5">
                     {sub.title}
                   </h2>
-                  <p className="font-body text-xs text-zinc-400 mt-2 line-clamp-2 leading-relaxed">
+                  <p className="font-inter text-xs text-zinc-400 mt-2 line-clamp-2 leading-relaxed">
                     {sub.description}
                   </p>
                 </div>
 
-                <div className="flex items-center gap-4 text-xs font-mono text-zinc-400 pt-1">
+                <div className="flex items-center gap-4 text-xs font-inter text-zinc-400 pt-1">
                   <span>{sub.totalTopics} Topics</span>
                   <span>•</span>
                   <span>{sub.totalQuizzes} Quizzes</span>
@@ -134,9 +126,9 @@ export default function SubjectsPage() {
 
               {/* Mastery Progress Bar Footer */}
               <div className="pt-3 border-t border-white/5 space-y-2">
-                <div className="flex justify-between items-center text-xs font-mono">
+                <div className="flex justify-between items-center text-xs font-inter">
                   <span className="text-zinc-400">Subject Mastery</span>
-                  <span className="text-cyan-300 font-bold">{sub.mastery}%</span>
+                  <span className="text-cyan-300 font-mono font-bold">{sub.mastery}%</span>
                 </div>
                 <div className="h-1.5 w-full bg-black/40 rounded-full overflow-hidden">
                   <div
@@ -156,7 +148,7 @@ export default function SubjectsPage() {
 
       {filteredSubjects.length === 0 && (
         <div className="text-center py-16 space-y-2">
-          <p className="font-display font-medium text-zinc-400 text-sm">
+          <p className="font-inter font-medium text-zinc-400 text-sm">
             No subjects matched your filter criteria.
           </p>
           <button
@@ -165,7 +157,7 @@ export default function SubjectsPage() {
               setSearch("");
               setSelectedDifficulty("ALL");
             }}
-            className="text-xs font-mono text-cyan-400 underline"
+            className="text-xs font-inter text-cyan-400 hover:underline"
           >
             Clear filters
           </button>

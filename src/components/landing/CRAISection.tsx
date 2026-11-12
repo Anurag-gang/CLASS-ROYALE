@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { Brain, Sparkles, MessageSquare, Terminal, HelpCircle, Flame, ArrowRight, ShieldCheck, Cpu } from "lucide-react";
 import { retroSound } from "@/lib/sound";
+import { SocratesAvatar } from "@/components/avatar/SocratesAvatar";
 
 type CRMode = "tutor" | "quiz" | "exam" | "revision" | "diagnostic";
 
@@ -117,11 +118,11 @@ export const CRAISection: React.FC = () => {
           <span>AUTONOMOUS COGNITIVE AGENT</span>
         </div>
         <h2 className="font-display font-extrabold text-3xl sm:text-4xl lg:text-5xl text-white tracking-tight">
-          Meet CR: Your Autonomous <br />
+          Meet Socrates: Your Autonomous <br />
           <span className="text-gradient-violet">Socratic AI Co-Pilot</span>
         </h2>
         <p className="font-body text-base text-zinc-400">
-          Not another generic chatbot. CR is an education-engineered learning companion integrated with OpenRouter
+          Not another generic chatbot. Socrates is an education-engineered learning companion integrated with Class Royale Socratic Engine &amp; ML Microservice
           that understands university curricula, pinpoints mental model flaws, and guides you toward true mastery.
         </p>
       </div>
@@ -172,7 +173,7 @@ export const CRAISection: React.FC = () => {
 
           <div className="flex items-center gap-2 text-xs font-mono text-emerald-400">
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
-            <span>MODEL: OPENROUTER / MULTI-LLM</span>
+            <span>ENGINE: SOCRATIC &amp; ML ADAPTIVE</span>
           </div>
         </div>
 
@@ -215,16 +216,16 @@ export const CRAISection: React.FC = () => {
             </div>
           </div>
 
-          {/* CR Socratic Response Bubble */}
+          {/* Socrates Response Bubble */}
           <div className="flex items-start gap-3">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-violet-600 to-cyan-500 p-[1px] shrink-0 shadow-[0_0_15px_rgba(139,92,246,0.5)]">
-              <div className="w-full h-full bg-[#080d21] rounded-[11px] flex items-center justify-center font-hud text-xs text-cyan-300 font-bold">
-                CR
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-600 to-cyan-500 p-[1px] shrink-0 shadow-[0_0_15px_rgba(139,92,246,0.5)] overflow-hidden">
+              <div className="w-full h-full bg-[#080d21] rounded-[11px] flex items-center justify-center p-0.5">
+                <SocratesAvatar size={36} status="speaking" />
               </div>
             </div>
             <div className="flex-1 bg-[#061226]/80 border border-cyan-500/30 rounded-2xl rounded-tl-sm p-5 text-sm font-body text-zinc-200 space-y-4">
               <div className="text-[11px] font-mono text-cyan-400 flex items-center justify-between">
-                <span>CR Socratic Response</span>
+                <span>Socrates // Socratic Response</span>
                 <span className="text-emerald-400 font-semibold">Verified Curriculum Match</span>
               </div>
 

@@ -1,35 +1,93 @@
-@import url("https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,700;0,800;0,900;1,800;1,900&family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Rajdhani:wght@500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Syne:wght@700;800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,700;0,800;0,900;1,800;1,900&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Rajdhani:wght@500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Syne:wght@700;800&display=swap");
 @import "tailwindcss";
 
+@theme {
+  /* Academic Slate & Midnight Canvas (80%) */
+  --color-canvas: #0b0f19;
+  --color-canvas-subtle: #0f172a;
+  --color-surface-card: #131b2e;
+  --color-surface-elevated: #1e293b;
+  --color-surface-sunken: #070a12;
+
+  /* 6 Canonical Knowledge Kingdom Realms */
+  --color-realm-algorithmic: #de1659;
+  --color-realm-relational: #3b82f6;
+  --color-realm-kernel: #8b5cf6;
+  --color-realm-network: #06b6d4;
+  --color-realm-neural: #10b981;
+  --color-realm-cloud: #f59e0b;
+
+  /* Fantasy RPG Heraldry & Mastery Accents (20%) */
+  --color-rpg-gold: #f59e0b;
+  --color-rpg-gold-light: #fde68a;
+  --color-rpg-bronze: #b45309;
+  --color-rpg-parchment: #fef3c7;
+
+  /* Authoritative 35s Timer Visual States */
+  --color-timer-normal: #06b6d4;
+  --color-timer-warning: #f59e0b;
+  --color-timer-critical: #ef4444;
+}
+
 :root {
-  --background: #050505;
-  --foreground: #f4f0fa;
-  --card: #08090c;
-  --card-foreground: #f4f0fa;
-  --popover: #08090c;
-  --popover-foreground: #f4f0fa;
+  --background: #0b0f19;
+  --foreground: #f8fafc;
+  --font-inter: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-body: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --card: #131b2e;
+  --card-foreground: #f8fafc;
+  --popover: #131b2e;
+  --popover-foreground: #f8fafc;
   --primary: #8b5cf6;
   --primary-foreground: #ffffff;
   --secondary: #06b6d4;
-  --secondary-foreground: #050505;
-  --muted: #131720;
-  --muted-foreground: #8f9ba8;
+  --secondary-foreground: #0b0f19;
+  --muted: #0f172a;
+  --muted-foreground: #94a3b8;
   --accent: #f59e0b;
-  --accent-foreground: #050505;
-  --destructive: #ff3344;
+  --accent-foreground: #0b0f19;
+  --destructive: #ef4444;
   --destructive-foreground: #ffffff;
-  --border: #1a1e29;
-  --ring: #8b5cf6;
-  --radius: 0px;
+  --border: #1e293b;
+  --ring: #06b6d4;
+  --radius: 0.75rem;
 }
 
 body {
   background-color: #050505;
   color: var(--foreground);
-  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  font-family: var(--font-inter), system-ui, -apple-system, sans-serif;
   overflow-x: hidden;
   margin: 0;
   padding: 0;
+}
+
+/* Inter Font for Subtexts, Descriptions, Captions and Small Texts */
+.font-inter,
+.font-subtext,
+.subtext,
+small,
+p,
+span.text-xs,
+span.text-sm,
+p.text-xs,
+p.text-sm,
+div.text-xs,
+div.text-sm,
+.text-xs:not(.font-mono):not(code):not(pre),
+.text-sm:not(.font-mono):not(code):not(pre),
+.text-\[10px\]:not(.font-mono):not(code):not(pre),
+.text-\[11px\]:not(.font-mono):not(code):not(pre),
+.text-\[12px\]:not(.font-mono):not(code):not(pre),
+.text-\[13px\]:not(.font-mono):not(code):not(pre),
+.text-\[14px\]:not(.font-mono):not(code):not(pre) {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  letter-spacing: -0.01em;
+}
+
+/* Preserve strict monospaced formatting for code blocks */
+code, pre, .font-mono, .font-code {
+  font-family: 'JetBrains Mono', monospace !important;
 }
 
 /* Hyper-condensed cinematic display typography */
@@ -50,7 +108,7 @@ body {
 }
 
 .font-body {
-  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
 }
 
 .font-hud,
@@ -67,6 +125,44 @@ body {
 .font-retro {
   font-family: "VT323", monospace;
   letter-spacing: 1px;
+}
+
+/* Modern Academic Card Surface */
+.academic-card {
+  background: rgba(19, 27, 46, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0.75rem;
+}
+
+.academic-card-hover {
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.academic-card-hover:hover {
+  transform: translateY(-2px);
+  border-color: rgba(6, 182, 212, 0.4);
+  box-shadow: 0 10px 30px -10px rgba(6, 182, 212, 0.15);
+}
+
+/* Misconception Callout Container */
+.academic-misconception-callout {
+  background: rgba(120, 53, 15, 0.15);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  border-left-width: 4px;
+  border-left-color: #f59e0b;
+  border-radius: 0.75rem;
+  padding: 1rem 1.25rem;
+}
+
+/* Pedagogical Explanation Container */
+.academic-explanation-card {
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  border-left-width: 4px;
+  border-left-color: #10b981;
+  border-radius: 0.75rem;
+  padding: 1.25rem;
 }
 
 /* Cinematic Realm Visual Tokens */
@@ -327,12 +423,13 @@ body {
   transform-origin: bottom left;
 }
 
-/* Section Heading Hover Reveal */
+/* Section Heading Hover Reveal - Stabilized without layout-shifting letter-spacing */
 .cr-heading-hover {
-  transition: letter-spacing 0.35s cubic-bezier(0.25, 1, 0.5, 1), color 0.3s ease;
+  transition: color 0.3s ease, text-shadow 0.3s ease;
 }
 .cr-heading-hover:hover {
-  letter-spacing: 0.02em;
+  color: #ffffff;
+  text-shadow: 0 0 25px rgba(34, 211, 238, 0.25);
 }
 
 /* Infinite Marquee Animation */

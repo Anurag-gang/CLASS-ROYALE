@@ -9,7 +9,7 @@
      CR TUTOR                                ML SERVICE
    Conversational                         Supervised ML
    Educational AI                        Student Modeling
-  (OpenRouter LLM)                      (FastAPI / Scikit)
+  (Socratic AI Engine)                      (FastAPI / Scikit)
           │                                       │
           │                         ┌─────────────┼─────────────┐
           │                         ▼             ▼             ▼

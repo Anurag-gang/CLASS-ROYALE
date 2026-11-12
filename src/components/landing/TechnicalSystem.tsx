@@ -110,7 +110,9 @@ export function SectionHeader({
   const frontRef = React.useRef<HTMLParagraphElement>(null);
 
   React.useEffect(() => {
-    if (typeof window === "undefined") return;
+    if (typeof window === "undefined" || !containerRef.current) return;
+    let ctx: any;
+
     const init = async () => {
       const { gsap } = await import("gsap");
       const { ScrollTrigger } = await import("gsap/ScrollTrigger");
@@ -118,62 +120,74 @@ export function SectionHeader({
 
       if (!containerRef.current) return;
 
-      if (backRef.current) {
-        gsap.to(backRef.current, {
-          y: -80,
-          ease: "none",
-          scrollTrigger: {
-            trigger: containerRef.current,
-            start: "top bottom",
-            end: "bottom top",
-            scrub: true,
-          },
-        });
-      }
-      if (midRef.current) {
-        gsap.to(midRef.current, {
-          y: -40,
-          ease: "none",
-          scrollTrigger: {
-            trigger: containerRef.current,
-            start: "top bottom",
-            end: "bottom top",
-            scrub: true,
-          },
-        });
-      }
-      if (frontRef.current) {
-        gsap.to(frontRef.current, {
-          y: -20,
-          ease: "none",
-          scrollTrigger: {
-            trigger: containerRef.current,
-            start: "top bottom",
-            end: "bottom top",
-            scrub: true,
-          },
-        });
-      }
+      ctx = gsap.context(() => {
+        if (backRef.current) {
+          gsap.to(backRef.current, {
+            y: -40,
+            ease: "none",
+            scrollTrigger: {
+              trigger: containerRef.current,
+              start: "top bottom",
+              end: "bottom top",
+              scrub: true,
+            },
+          });
+        }
+        if (midRef.current) {
+          gsap.to(midRef.current, {
+            y: -20,
+            ease: "none",
+            scrollTrigger: {
+              trigger: containerRef.current,
+              start: "top bottom",
+              end: "bottom top",
+              scrub: true,
+            },
+          });
+        }
+        if (frontRef.current) {
+          gsap.to(frontRef.current, {
+            y: -10,
+            ease: "none",
+            scrollTrigger: {
+              trigger: containerRef.current,
+              start: "top bottom",
+              end: "bottom top",
+              scrub: true,
+            },
+          });
+        }
+      }, containerRef);
     };
 
     init();
+    return () => ctx?.revert();
   }, []);
 
   return (
-    <div ref={containerRef} className={`parallax-layers relative py-6 overflow-visible ${className}`}>
-      {/* Back Parallax Layer */}
-      <h3
-        ref={backRef}
-        className="back absolute -top-8 sm:-top-12 left-0 font-condensed font-black text-6xl sm:text-8xl md:text-9xl uppercase tracking-tighter text-white pointer-events-none select-none opacity-10 leading-none whitespace-nowrap will-change-transform"
-        aria-hidden="true"
-      >
-        {title}
-      </h3>
+    <div ref={containerRef} className={`parallax-layers relative py-6 overflow-hidden ${className}`}>
+      {/* Category & Number Eyebrow */}
+      {(category || number) && (
+        <div className="relative z-10 flex items-center gap-2 mb-2 font-mono text-[11px] sm:text-xs text-cyan-400 uppercase tracking-widest font-semibold">
+          {number && <span className="text-white/40">[{number}]</span>}
+          {category && <span>{category}</span>}
+        </div>
+      )}
+
+      {/* Back Parallax Layer - contained inside overflow-hidden to prevent CLS and horizontal overflow */}
+      <div className="absolute -top-6 sm:-top-10 left-0 right-0 overflow-hidden pointer-events-none select-none opacity-10" aria-hidden="true">
+        <h3
+          ref={backRef}
+          className="back font-condensed font-black text-6xl sm:text-8xl md:text-9xl uppercase tracking-tighter text-white leading-none whitespace-nowrap will-change-transform"
+        >
+          {title}
+        </h3>
+      </div>
 
       {/* Mid Parallax Layer */}
       <h2
         ref={midRef}
-        className="mid relative z-10 font-condensed font-black text-4xl sm:text-6xl md:text-7xl lg:text-8xl tracking-tight text-white uppercase leading-[0.88] cr-heading-hover cursor-default will-change-transform"
+        className="mid relative z-10 font-condensed font-black text-4xl sm:text-6xl md:text-7xl lg:text-8xl tracking-tight text-white uppercase leading-[0.92] cr-heading-hover cursor-default will-change-transform"
       >
         {title}
       </h2>
@@ -182,7 +196,7 @@ export function SectionHeader({
       {subtitle && (
         <p
           ref={frontRef}
-          className="front relative z-10 font-body text-xs sm:text-sm text-zinc-400 max-w-xl font-normal mt-3 will-change-transform"
+          className="front relative z-10 font-body text-xs sm:text-sm text-zinc-400 max-w-xl font-normal mt-3 leading-relaxed will-change-transform"
         >
           {subtitle}
         </p>

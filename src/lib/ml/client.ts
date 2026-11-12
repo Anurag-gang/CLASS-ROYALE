@@ -1,7 +1,8 @@
 /**
  * Class Royale Machine Learning Service Client
  * Connects Next.js application & CR Socratic Agent to the local ML Engine.
- * Features automatic failover to local pedagogical heuristic engine if the Python service is offline.
+ * Features ultra-low latency, in-memory TTL caching, circuit-breaking,
+ * and deterministic pedagogical fallback.
  */
 
 import {
@@ -14,14 +15,29 @@ import {
   StudentInteraction,
 } from "./types";
 
+interface CacheEntry<T> {
+  data: T;
+  timestamp: number;
+}
+
 export class MLServiceClient {
   private baseUrl: string;
   private timeoutMs: number;
   private lastHealthCheck: { ok: boolean; timestamp: number } | null = null;
 
+  // Caching & Circuit Breaker
+  private adaptiveCache: Map<string, CacheEntry<AdaptiveActionResponse>> = new Map();
+  private profileCache: Map<string, CacheEntry<StudentProfilePredictionResponse>> = new Map();
+  private cacheTtlMs: number = 15000; // 15 seconds TTL
+
+  private consecutiveFailures: number = 0;
+  private circuitOpenUntil: number = 0;
+  private readonly maxFailuresBeforeBreak: number = 2;
+  private readonly breakDurationMs: number = 10000; // 10 seconds
+
   constructor() {
     this.baseUrl = (process.env.ML_SERVICE_URL || "http://127.0.0.1:8000").replace(/\/+$/, "");
-    this.timeoutMs = 3000;
+    this.timeoutMs = 900; // Fast 900ms microservice deadline to never block UI thread
   }
 
   /**
@@ -35,7 +51,7 @@ export class MLServiceClient {
 
     try {
       const controller = new AbortController();
-      const id = setTimeout(() => controller.abort(), 1200);
+      const id = setTimeout(() => controller.abort(), 600);
 
       const res = await fetch(`${this.baseUrl}/health`, {
         signal: controller.signal,
@@ -45,6 +61,10 @@ export class MLServiceClient {
 
       const ok = res.ok;
       this.lastHealthCheck = { ok, timestamp: now };
+      if (ok) {
+        this.consecutiveFailures = 0;
+        this.circuitOpenUntil = 0;
+      }
       return ok;
     } catch {
       this.lastHealthCheck = { ok: false, timestamp: now };
@@ -53,9 +73,28 @@ export class MLServiceClient {
   }
 
   /**
-   * Queries ML Service for next-action decision, with zero-fail fallback
+   * Queries ML Service for next-action decision, with zero-fail fallback,
+   * non-blocking timeout, and in-memory TTL caching.
    */
   public async getAdaptiveAction(req: AdaptiveActionRequest): Promise<AdaptiveActionResponse> {
+    const cacheKey = `${req.student_id}:${req.topic_id}:${req.consecutive_correct ?? 0}:${req.consecutive_wrong ?? 0}:${req.last_answer_correct ?? "none"}`;
+    const now = Date.now();
+
+    // 1. Check in-memory cache
+    const cached = this.adaptiveCache.get(cacheKey);
+    if (cached && now - cached.timestamp < this.cacheTtlMs) {
+      return cached.data;
+    }
+
+    // 2. Check circuit breaker status
+    if (now < this.circuitOpenUntil) {
+      // Circuit is open, immediately return fast local fallback without network delay
+      const fallback = this.computeLocalAdaptiveFallback(req);
+      this.adaptiveCache.set(cacheKey, { data: fallback, timestamp: now });
+      return fallback;
+    }
+
+    // 3. Attempt network call to local ML service
     try {
       const controller = new AbortController();
       const timer = setTimeout(() => controller.abort(), this.timeoutMs);
@@ -70,50 +109,79 @@ export class MLServiceClient {
 
       if (res.ok) {
         const data = await res.json();
-        return {
+        const response: AdaptiveActionResponse = {
           ...data,
           is_live: true,
         };
+        // Reset failure counter on success
+        this.consecutiveFailures = 0;
+        this.circuitOpenUntil = 0;
+
+        // Store in cache
+        this.adaptiveCache.set(cacheKey, { data: response, timestamp: now });
+        return response;
       }
     } catch {
-      // Fall through to deterministic local fallback engine
+      // Trip circuit breaker if consecutive failures exceed threshold
+      this.consecutiveFailures++;
+      if (this.consecutiveFailures >= this.maxFailuresBeforeBreak) {
+        this.circuitOpenUntil = Date.now() + this.breakDurationMs;
+      }
     }
 
-    // High-fidelity local fallback matching Python AdaptiveLearningEngine
-    return this.computeLocalAdaptiveFallback(req);
+    // 4. High-fidelity local fallback matching Python AdaptiveLearningEngine
+    const fallback = this.computeLocalAdaptiveFallback(req);
+    this.adaptiveCache.set(cacheKey, { data: fallback, timestamp: now });
+    return fallback;
   }
 
   /**
-   * Evaluates student profile across all syllabus domains
+   * Evaluates student profile across syllabus domains with caching and fast failover
    */
   public async predictStudentProfile(
     studentId: string,
     interactions: StudentInteraction[]
   ): Promise<StudentProfilePredictionResponse> {
-    try {
-      const controller = new AbortController();
-      const timer = setTimeout(() => controller.abort(), this.timeoutMs);
+    const now = Date.now();
+    const cacheKey = `${studentId}:${interactions.length}:${interactions[interactions.length - 1]?.question_id ?? "none"}`;
 
-      const res = await fetch(`${this.baseUrl}/predict/student-profile`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ student_id: studentId, interactions }),
-        signal: controller.signal,
-      });
-      clearTimeout(timer);
-
-      if (res.ok) {
-        return await res.json();
-      }
-    } catch {
-      // Fallback
+    const cached = this.profileCache.get(cacheKey);
+    if (cached && now - cached.timestamp < this.cacheTtlMs) {
+      return cached.data;
     }
 
-    // Local approximation
+    if (now >= this.circuitOpenUntil) {
+      try {
+        const controller = new AbortController();
+        const timer = setTimeout(() => controller.abort(), this.timeoutMs);
+
+        const res = await fetch(`${this.baseUrl}/predict/student-profile`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ student_id: studentId, interactions }),
+          signal: controller.signal,
+        });
+        clearTimeout(timer);
+
+        if (res.ok) {
+          const data = await res.json();
+          this.consecutiveFailures = 0;
+          this.profileCache.set(cacheKey, { data, timestamp: now });
+          return data;
+        }
+      } catch {
+        this.consecutiveFailures++;
+        if (this.consecutiveFailures >= this.maxFailuresBeforeBreak) {
+          this.circuitOpenUntil = Date.now() + this.breakDurationMs;
+        }
+      }
+    }
+
+    // Local deterministic approximation fallback
     const correctCount = interactions.filter((i) => i.answer_correct).length;
     const overallMastery = interactions.length > 0 ? correctCount / interactions.length : 0.65;
 
-    return {
+    const fallback: StudentProfilePredictionResponse = {
       status: "SUCCESS",
       student_id: studentId,
       overall_mastery: Math.round(overallMastery * 100) / 100,
@@ -123,6 +191,9 @@ export class MLServiceClient {
       recommended_action: overallMastery < 0.6 ? "REVISE_TOPIC" : "ANSWER_NEXT_QUESTION",
       model_versions: { fallback_engine: "local_heuristic_v1.0" },
     };
+
+    this.profileCache.set(cacheKey, { data: fallback, timestamp: now });
+    return fallback;
   }
 
   /**

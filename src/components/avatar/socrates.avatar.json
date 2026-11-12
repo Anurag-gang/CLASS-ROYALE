@@ -1,0 +1,180 @@
+{
+  "schema": "bible-strong/avatar-definition",
+  "schemaVersion": 1,
+  "name": "socrates",
+  "body": {
+    "primary": {
+      "type": "sphere",
+      "width": 220,
+      "height": 230,
+      "depth": 210,
+      "roundness": 0.95
+    },
+    "nodes": [
+      {
+        "surface": {
+          "type": "cone",
+          "width": 140,
+          "height": 80,
+          "depth": 100,
+          "roundness": 0.5,
+          "tipRoundness": 0.4,
+          "baseRoundness": 0.3
+        },
+        "position": [0, -85, 30],
+        "rotation": [10, 0, 0]
+      },
+      {
+        "surface": {
+          "type": "cylinder",
+          "width": 190,
+          "height": 28,
+          "depth": 190,
+          "roundness": 0.8
+        },
+        "position": [0, 95, 0],
+        "rotation": [-5, 0, 0]
+      }
+    ]
+  },
+  "colors": {
+    "body": "#ede6f6",
+    "eyes": "#1e0836"
+  },
+  "expressions": {
+    "neutral": {
+      "head": { "x": 0, "y": 0, "z": 0 },
+      "eyes": {
+        "left": { "width": 14, "height": 20, "x": -38, "y": 15, "angle": 0 },
+        "right": { "width": 14, "height": 20, "x": 38, "y": 15, "angle": 0 },
+        "spacing": 76
+      },
+      "perspective": 1,
+      "motion": { "eyes": "microSaccades", "body": "slowDrift" }
+    },
+    "thinking": {
+      "head": { "x": 8, "y": 12, "z": -5 },
+      "eyes": {
+        "left": { "width": 12, "height": 14, "x": -35, "y": 26, "angle": 10 },
+        "right": { "width": 16, "height": 22, "x": 42, "y": 28, "angle": 5 },
+        "spacing": 77
+      },
+      "perspective": 1.1,
+      "motion": { "eyes": "microSaccades", "body": "slowDrift" },
+      "colors": { "eyes": "#00ffcc" }
+    },
+    "speaking": {
+      "head": { "x": 0, "y": -4, "z": 2 },
+      "eyes": {
+        "left": { "width": 16, "height": 24, "x": -38, "y": 16, "angle": -2 },
+        "right": { "width": 16, "height": 24, "x": 38, "y": 16, "angle": 2 },
+        "spacing": 76
+      },
+      "perspective": 1,
+      "motion": { "eyes": "microSaccades", "body": "shake" },
+      "colors": { "eyes": "#f755bc" }
+    },
+    "inquiry": {
+      "head": { "x": -6, "y": 6, "z": 4 },
+      "eyes": {
+        "left": { "width": 18, "height": 22, "x": -36, "y": 20, "angle": -5 },
+        "right": { "width": 14, "height": 18, "x": 38, "y": 18, "angle": 8 },
+        "spacing": 74
+      },
+      "perspective": 1.05,
+      "motion": { "eyes": "microSaccades", "body": "slowDrift" },
+      "colors": { "eyes": "#facc15" }
+    },
+    "sleeping": {
+      "head": { "x": -4, "y": -15, "z": 0 },
+      "eyes": {
+        "left": { "width": 18, "height": 4, "x": -38, "y": 6, "angle": 0 },
+        "right": { "width": 18, "height": 4, "x": 38, "y": 6, "angle": 0 },
+        "spacing": 76
+      },
+      "perspective": 0.95,
+      "motion": { "eyes": "none", "body": "slowDrift" }
+    }
+  },
+  "expressionOrder": ["neutral", "thinking", "speaking", "inquiry", "sleeping"],
+  "animations": {
+    "idle": {
+      "playbackMode": "loop",
+      "steps": [
+        { "expression": "neutral", "holdMs": 3000, "transitionMs": 600, "transition": "smooth" },
+        { "expression": "thinking", "holdMs": 1800, "transitionMs": 500, "transition": "smooth" },
+        { "expression": "neutral", "holdMs": 2500, "transitionMs": 600, "transition": "smooth" }
+      ],
+      "blink": {
+        "enabled": true,
+        "initialDelayMs": 1000,
+        "minIntervalMs": 2200,
+        "maxIntervalMs": 4500,
+        "durationMs": 160
+      },
+      "metadata": { "label": "Socrates Idle Pondering", "group": "default" }
+    },
+    "thinking": {
+      "playbackMode": "loop",
+      "steps": [
+        { "expression": "thinking", "holdMs": 1500, "transitionMs": 400, "transition": "snappy" },
+        { "expression": "inquiry", "holdMs": 800, "transitionMs": 350, "transition": "smooth" }
+      ],
+      "blink": {
+        "enabled": true,
+        "initialDelayMs": 500,
+        "minIntervalMs": 1800,
+        "maxIntervalMs": 3500,
+        "durationMs": 140
+      },
+      "metadata": { "label": "Socrates Deep Contemplation", "group": "interaction" }
+    },
+    "speaking": {
+      "playbackMode": "loop",
+      "steps": [
+        { "expression": "speaking", "holdMs": 350, "transitionMs": 180, "transition": "snappy" },
+        { "expression": "neutral", "holdMs": 200, "transitionMs": 150, "transition": "snappy" },
+        { "expression": "speaking", "holdMs": 400, "transitionMs": 200, "transition": "smooth" },
+        { "expression": "inquiry", "holdMs": 300, "transitionMs": 180, "transition": "snappy" }
+      ],
+      "blink": {
+        "enabled": true,
+        "initialDelayMs": 800,
+        "minIntervalMs": 2000,
+        "maxIntervalMs": 4000,
+        "durationMs": 120
+      },
+      "metadata": { "label": "Socrates Socratic Dialogue", "group": "interaction" }
+    },
+    "inquiry": {
+      "playbackMode": "loop",
+      "steps": [
+        { "expression": "inquiry", "holdMs": 1600, "transitionMs": 400, "transition": "snappy" },
+        { "expression": "thinking", "holdMs": 1200, "transitionMs": 450, "transition": "smooth" }
+      ],
+      "blink": {
+        "enabled": true,
+        "initialDelayMs": 600,
+        "minIntervalMs": 2000,
+        "maxIntervalMs": 4000,
+        "durationMs": 150
+      },
+      "metadata": { "label": "Socrates Inquisitive Scaffolding", "group": "interaction" }
+    },
+    "sleeping": {
+      "playbackMode": "loop",
+      "steps": [
+        { "expression": "sleeping", "holdMs": 4000, "transitionMs": 1000, "transition": "smooth" }
+      ],
+      "blink": {
+        "enabled": false,
+        "initialDelayMs": 0,
+        "minIntervalMs": 3000,
+        "maxIntervalMs": 6000,
+        "durationMs": 200
+      },
+      "metadata": { "label": "Socrates Slumber / Recharging", "group": "sleep" }
+    }
+  },
+  "animationOrder": ["idle", "thinking", "speaking", "inquiry", "sleeping"]
+}

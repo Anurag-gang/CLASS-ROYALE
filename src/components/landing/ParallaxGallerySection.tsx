@@ -99,21 +99,11 @@ export function ParallaxGallerySection() {
 
       {/* Header */}
       <div className="relative z-10 max-w-7xl mx-auto px-6 sm:px-10 mb-16">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-white/[0.08]">
-          <div className="space-y-3">
-            <span className="text-xs font-mono text-cyan-400 uppercase tracking-widest font-semibold flex items-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
-              ENGINEERING DISCIPLINES IN FOCUS
-            </span>
-            <h2 className="font-condensed font-black text-4xl sm:text-6xl uppercase tracking-tight text-white leading-none cr-heading-hover">
-              APPLIED SYSTEMS <br />
-              <span className="text-cyan-400">IN CONTINUOUS PARALLAX</span>
-            </h2>
-          </div>
-
-          <p className="max-w-md text-xs sm:text-sm text-zinc-400 leading-relaxed font-body">
-            Real engineering challenges mapped to structured learning tracks. From silicon micro-architecture to distributed consensus and cryptographic proofs.
-          </p>
+        <div className="pb-6 border-b border-white/[0.08]">
+          <h2 className="font-condensed font-black text-4xl sm:text-6xl uppercase tracking-tight text-white leading-none cr-heading-hover">
+            APPLIED SYSTEMS <br />
+            <span className="text-cyan-400">IN CONTINUOUS PARALLAX</span>
+          </h2>
         </div>
       </div>
 
@@ -144,17 +134,13 @@ export function ParallaxGallerySection() {
       </div>
 
       {/* Section Footer Call to Action */}
-      <div className="relative z-10 max-w-7xl mx-auto px-6 sm:px-10 mt-16 flex flex-col sm:flex-row items-center justify-between gap-6 pt-8 border-t border-white/[0.08]">
-        <div className="text-xs font-mono text-zinc-500 uppercase tracking-wider">
-          Curriculum mapped across 12 university engineering faculties
-        </div>
-
+      <div className="relative z-10 max-w-7xl mx-auto px-6 sm:px-10 mt-16 flex justify-end pt-8 border-t border-white/[0.08]">
         <Link
           href="/subjects"
           onClick={() => retroSound.playClick()}
           className="group inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/15 hover:border-cyan-400 text-xs sm:text-sm font-mono text-cyan-400 uppercase tracking-wider font-semibold transition-all"
         >
-          <span>Explore All 12 Engineering Tracks</span>
+          <span>Explore All Tracks</span>
           <span className="group-hover:translate-x-1 transition-transform">&rarr;</span>
         </Link>
       </div>
@@ -179,15 +165,12 @@ function CleanImageCard({ item }: { item: EngineeringCard }) {
 
       {/* Content directly overlaying image with drop shadow */}
       <div className="absolute inset-x-0 bottom-0 p-6 flex flex-col justify-end pointer-events-none">
-        <span className="text-cyan-400 font-mono text-[11px] uppercase tracking-widest font-bold drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)] mb-1.5">
+        <span className="text-cyan-400 font-mono text-[11px] uppercase tracking-widest font-bold drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)] mb-1">
           {item.category}
         </span>
         <h3 className="text-white font-condensed font-black text-2xl sm:text-3xl uppercase tracking-tight leading-tight drop-shadow-[0_2px_10px_rgba(0,0,0,0.95)] group-hover:text-cyan-300 transition-colors">
           {item.title}
         </h3>
-        <p className="text-zinc-300 text-xs sm:text-sm mt-2 font-body leading-relaxed drop-shadow-[0_1px_4px_rgba(0,0,0,0.9)] opacity-90 group-hover:opacity-100 transition-opacity">
-          {item.description}
-        </p>
       </div>
     </div>
   );

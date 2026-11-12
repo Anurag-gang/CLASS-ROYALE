@@ -1,0 +1,16 @@
+apiVersion: v2
+name: class-royale
+description: Enterprise Helm chart for Class Royale gamified learning platform and ML microservice
+type: application
+version: 1.0.0
+appVersion: "1.0.0"
+keywords:
+  - education
+  - nextjs
+  - fastapi
+  - gamification
+  - machine-learning
+home: https://classroyale.edu
+maintainers:
+  - name: Class Royale Platform Engineering
+    email: engineering@classroyale.edu

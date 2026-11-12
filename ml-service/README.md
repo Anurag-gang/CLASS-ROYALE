@@ -62,7 +62,7 @@ The ML Service is strictly isolated from frontend rendering, XP math, auth, and 
 ## 3. Separation of Conversational AI & Predictive ML
 
 Class Royale clearly distinguishes two complementary AI systems:
-1. **CR Tutor / Conversational AI (`src/lib/cr/`):** Generative LLM via OpenRouter for natural language dialogues, step-by-step problem breakdown, code debugging, and Socratic questioning.
+1. **CR Tutor / Conversational AI (`src/lib/ai/`):** Autonomous Socratic Pedagogy Engine for natural language dialogues, step-by-step problem breakdown, code debugging, and Socratic questioning.
 2. **Class Royale ML Service (`ml-service/`):** Classical supervised ML models trained on structured telemetry to predict numeric mastery, calibrate difficulty, and recommend curriculum paths.
 
 Supervised statistical ML does not replace conversational intelligence, and generative LLMs are not burdened with statistical telemetry clustering.

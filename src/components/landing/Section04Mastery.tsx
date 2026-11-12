@@ -19,9 +19,7 @@ export function Section04Mastery() {
         {/* Section Header */}
         <SectionHeader
           number="04"
-          category="TOPIC MASTERY SYSTEM"
           title="KNOW WHERE YOU STAND."
-          subtitle="Empirical retention modeling tracks exact conceptual boundaries."
         />
 
         <TechnicalBorder />
@@ -60,7 +58,7 @@ export function Section04Mastery() {
                 {/* Inner Central Readout */}
                 <div className="absolute flex flex-col items-center justify-center text-center">
                   <span className="font-mono text-[10px] text-cyan-400 uppercase tracking-widest">
-                    OVERALL MASTERY
+                    MASTERY
                   </span>
                   <div className="font-condensed font-black text-6xl sm:text-7xl text-white tracking-tighter">
                     72%
@@ -70,19 +68,10 @@ export function Section04Mastery() {
                   </span>
                 </div>
               </div>
-
-              <div className="mt-4 font-mono text-[10px] text-white/30 tracking-widest uppercase">
-                GAUGE CALIBRATION // MULTI-TOPIC AGGREGATE
-              </div>
             </div>
 
             {/* Right: Subtopic Telemetry Breakdown */}
             <div className="lg:col-span-6 space-y-6">
-              <div className="border-b border-white/10 pb-4 flex items-center justify-between font-mono text-xs text-white/40">
-                <span>SUBTOPIC AUDIT INDEX</span>
-                <Crosshair />
-              </div>
-
               <div className="space-y-4">
                 {subtopics.map((st) => (
                   <div
@@ -111,10 +100,6 @@ export function Section04Mastery() {
                   </div>
                 ))}
               </div>
-
-              <p className="font-tech text-xs text-white/40 tracking-wider uppercase">
-                Every topic remains in perpetual evaluation. As intervals lapse, unpracticed memory traces decay slightly to trigger timely retrieval drills.
-              </p>
             </div>
           </div>
         </CornerFrame>

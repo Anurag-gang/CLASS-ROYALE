@@ -24,28 +24,18 @@ export default function HowItWorksPage() {
       <div className="max-w-6xl mx-auto space-y-20">
         {/* Page Hero */}
         <div className="text-center space-y-4 max-w-3xl mx-auto pt-8">
-          <span className="text-xs font-mono text-cyan-400 uppercase tracking-widest font-semibold flex items-center justify-center gap-2">
-            <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
-            METHODOLOGY &amp; ARCHITECTURE
-          </span>
           <h1 className="font-condensed font-black text-5xl sm:text-7xl md:text-8xl uppercase tracking-tight text-white leading-none">
             HOW CLASS ROYALE <br />
             <span className="text-cyan-400">ENGINEERS MASTERY</span>
           </h1>
-          <p className="text-sm sm:text-base text-zinc-400 max-w-2xl mx-auto leading-relaxed font-body">
-            Engineering education shouldn&apos;t be passive video consumption or guesswork. Class Royale transforms university syllabi into continuous, measurable, active mastery loops powered by machine learning.
-          </p>
         </div>
 
         {/* 5-Stage Interactive Learning Loop */}
         <div className="space-y-8">
           <div className="text-center">
             <h2 className="text-2xl sm:text-3xl font-condensed font-bold uppercase text-white tracking-wider">
-              The 5-Step Continuous Feedback Loop
+              Feedback Loop
             </h2>
-            <p className="text-xs font-mono text-zinc-500 uppercase mt-1">
-              From syllabus atomization to cohort competition
-            </p>
           </div>
 
           <LearningLoopStroke />
@@ -55,10 +45,7 @@ export default function HowItWorksPage() {
 
         {/* Core Principles Grid */}
         <div className="space-y-10">
-          <div className="text-center space-y-2">
-            <span className="text-xs font-mono text-cyan-400 uppercase tracking-widest font-semibold">
-              ACADEMIC RIGOR
-            </span>
+          <div className="text-center">
             <h2 className="font-condensed font-black text-3xl sm:text-5xl uppercase tracking-tight text-white">
               ENGINEERED FOR DEEP RETRIEVAL
             </h2>
@@ -73,9 +60,6 @@ export default function HowItWorksPage() {
               <h3 className="font-condensed font-black text-2xl uppercase tracking-tight text-white">
                 Item Response Theory
               </h3>
-              <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed">
-                Questions are mathematically calibrated according to latent difficulty, discrimination, and student capability. No more arbitrary quiz scores.
-              </p>
             </div>
 
             {/* Card 2 */}
@@ -86,9 +70,6 @@ export default function HowItWorksPage() {
               <h3 className="font-condensed font-black text-2xl uppercase tracking-tight text-white">
                 Bayesian Knowledge Tracing
               </h3>
-              <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed">
-                Our supervised ML model predicts your exact probability of mastering each concept topic based on interaction histories, response times, and error patterns.
-              </p>
             </div>
 
             {/* Card 3 */}
@@ -99,9 +80,6 @@ export default function HowItWorksPage() {
               <h3 className="font-condensed font-black text-2xl uppercase tracking-tight text-white">
                 Cohort Clan Dynamics
               </h3>
-              <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed">
-                Study clans allow students to tackle engineering problems collaboratively, compare mastery metrics across university departments, and participate in timed sprints.
-              </p>
             </div>
           </div>
         </div>
@@ -114,7 +92,7 @@ export default function HowItWorksPage() {
           <h2 className="font-condensed font-black text-3xl sm:text-5xl uppercase tracking-tight text-white max-w-2xl mx-auto leading-tight">
             START YOUR ACADEMIC DIAGNOSTIC TODAY
           </h2>
-          <p className="text-xs sm:text-sm text-zinc-400 max-w-xl mx-auto">
+          <p className="text-xs sm:text-sm text-zinc-400 font-inter max-w-xl mx-auto leading-relaxed">
             Choose your engineering subject, complete your baseline diagnostic assessment, and let the Class Royale adaptive engine build your personal roadmap.
           </p>
 

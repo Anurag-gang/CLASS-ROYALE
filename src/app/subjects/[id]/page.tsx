@@ -127,6 +127,21 @@ export default function SubjectDetailPage() {
             />
           </div>
         </div>
+
+        {/* Enter Realm Trail CTA */}
+        <div className="pt-3 border-t border-white/5 flex flex-wrap items-center justify-between gap-3">
+          <span className="font-inter text-xs text-zinc-300">
+            Journey through the 7-Tier progressive realm path with timed trials.
+          </span>
+          <Link
+            href={`/realm/${id}`}
+            onClick={() => retroSound.playLevelUp()}
+            className="px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-violet-600 hover:from-cyan-400 hover:to-violet-500 text-white font-inter text-xs font-semibold shadow-md flex items-center gap-2 transition-all"
+          >
+            <span>Enter Realm Trail</span>
+            <ChevronRight className="w-3.5 h-3.5" />
+          </Link>
+        </div>
       </div>
 
       {/* Next Recommended Step Callout */}

@@ -1,0 +1,94 @@
+# Default values for class-royale Helm chart
+
+global:
+  environment: production
+  domain: classroyale.edu
+
+webApp:
+  replicaCount: 2
+  image:
+    repository: class-royale-web-app
+    pullPolicy: IfNotPresent
+    tag: "latest"
+  service:
+    type: ClusterIP
+    port: 3000
+  resources:
+    limits:
+      cpu: 800m
+      memory: 1024Mi
+    requests:
+      cpu: 200m
+      memory: 256Mi
+  autoscaling:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 10
+    targetCPUUtilizationPercentage: 70
+    targetMemoryUtilizationPercentage: 80
+  env:
+    nodeEnv: "production"
+    aiProvider: "socratic"
+    aiDailyLimit: "200"
+
+mlService:
+  replicaCount: 2
+  image:
+    repository: class-royale-ml-service
+    pullPolicy: IfNotPresent
+    tag: "latest"
+  service:
+    type: ClusterIP
+    port: 8000
+  resources:
+    limits:
+      cpu: 1000m
+      memory: 1536Mi
+    requests:
+      cpu: 250m
+      memory: 512Mi
+  autoscaling:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 6
+    targetCPUUtilizationPercentage: 75
+  persistence:
+    enabled: true
+    storageClass: ""
+    size: 5Gi
+
+secrets:
+  jwtSecret: "class-royale-helm-super-secret-key-change-me"
+  supabaseUrl: "https://your-supabase-project.supabase.co"
+  supabaseAnonKey: "your-supabase-anon-key"
+  supabaseServiceRoleKey: "your-supabase-service-role-key"
+  databaseUrl: "postgresql://postgres:yourpassword@db.supabase.co:5432/postgres?sslmode=require"
+  mistralApiKey: "your-mistral-api-key"
+
+ingress:
+  enabled: true
+  className: "nginx"
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: "20m"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "120"
+  hosts:
+    - host: classroyale.edu
+      paths:
+        - path: /api/ml
+          pathType: Prefix
+          service: ml-service
+          port: 8000
+        - path: /
+          pathType: Prefix
+          service: web-app
+          port: 3000
+  tls:
+    - secretName: class-royale-tls-certs
+      hosts:
+        - classroyale.edu
+        - www.classroyale.edu
+
+networkPolicy:
+  enabled: true

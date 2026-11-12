@@ -48,6 +48,7 @@ next-env.d.ts
 
 # python & virtual environments
 __pycache__/
+colibri/
 *.py[cod]
 *$py.class
 *.so
@@ -65,5 +66,8 @@ ml-service/datasets/raw/
 *.tar.gz
 *.tar
 *.parquet
+
+# internal agent teamwork logs
+.agents/teamwork/
 
 

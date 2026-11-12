@@ -260,9 +260,12 @@ export class CROrchestrator {
     mlTelemetry: MLTelemetry;
     topic: string;
   }> {
-    // 1. Fetch sanitized student telemetry
-    const context = await buildStudentContext(userId);
+    // 1. Fetch sanitized student telemetry and RAG documents concurrently
     const { topic } = this.detectIntent(userQuery, mode);
+    const [context, ragDocs] = await Promise.all([
+      buildStudentContext(userId),
+      defaultRAGRetriever.retrieve(userId, userQuery, courseId, 2),
+    ]);
 
     // 2. Query Machine Learning Adaptive Engine
     const isWeak = context.weakTopics.some((w) => w.toLowerCase().includes(topic.toLowerCase()));
@@ -310,11 +313,9 @@ export class CROrchestrator {
     const adaptiveRes = await mlClient.getAdaptiveAction(adaptiveReq);
     const mlTelemetry = mlClient.formatTelemetry(adaptiveRes);
 
-    // 3. Retrieve relevant course documents via RAG
-    const ragDocs = await defaultRAGRetriever.retrieve(userId, userQuery, courseId, 2);
     const ragPrompt = formatRAGContext(ragDocs);
 
-    // 4. Assemble pedagogical system prompt
+    // 3. Assemble pedagogical system prompt
     const studentTelemetryPrompt = formatStudentContextPrompt(context);
     const mlAdaptivePrompt = formatMLAdaptivePrompt(mlTelemetry);
     const modePrompt = CR_MODE_PROMPTS[mode] || CR_MODE_PROMPTS.TUTOR;

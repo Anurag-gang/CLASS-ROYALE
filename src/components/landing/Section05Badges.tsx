@@ -57,9 +57,7 @@ export function Section05Badges() {
         {/* Section Header */}
         <SectionHeader
           number="05"
-          category="ACADEMIC VERIFICATION"
           title="MASTER IT. KEEP IT."
-          subtitle="Verifiable subject mastery badges earned through proven retrieval precision."
         />
 
         <TechnicalBorder />
@@ -82,23 +80,17 @@ export function Section05Badges() {
                 <CornerFrame
                   size={10}
                   borderColor={isHovered ? "border-cyan-400" : "border-white/10"}
-                  className="p-6 bg-[#08090d] border border-white/10 group-hover:border-cyan-400/50 transition-all flex flex-col justify-between h-96 relative overflow-hidden"
+                  className="p-6 bg-[#08090d] border border-white/10 group-hover:border-cyan-400/50 transition-all flex flex-col justify-between h-80 relative overflow-hidden"
                 >
                   {/* Subtle Scan Line on Hover */}
                   {isHovered && (
                     <div className="absolute inset-0 bg-gradient-to-b from-transparent via-cyan-400/5 to-transparent animate-pulse pointer-events-none" />
                   )}
 
-                  {/* Top Badge Metadata */}
-                  <div className="flex items-center justify-between font-mono text-[10px] text-white/40 uppercase">
-                    <span>{b.code}</span>
-                    <Crosshair />
-                  </div>
-
                   {/* Center Emblem Visual */}
                   <div className="flex flex-col items-center justify-center space-y-4 my-auto">
                     <div
-                      className={`w-24 h-24 border flex items-center justify-center text-4xl transition-all duration-300 ${
+                      className={`w-20 h-20 border flex items-center justify-center text-3xl transition-all duration-300 ${
                         isHovered
                           ? "border-cyan-400 bg-cyan-950/40 text-cyan-200 scale-105 shadow-[0_0_30px_rgba(6,182,212,0.2)]"
                           : "border-white/20 bg-white/[0.02] text-white/60"
@@ -107,25 +99,19 @@ export function Section05Badges() {
                       <span>{b.icon}</span>
                     </div>
 
-                    <div className="text-center space-y-1">
+                    <div className="text-center">
                       <h3 className="font-condensed font-black text-xl text-white uppercase tracking-tight">
                         {b.title}
                       </h3>
-                      <span className="font-mono text-[10px] text-white/40 block">
-                        VERIFIED: {b.verified}
-                      </span>
                     </div>
                   </div>
 
                   {/* Bottom Status Banner */}
-                  <div className="pt-4 border-t border-white/10 flex items-center justify-between">
+                  <div className="pt-4 border-t border-white/10 flex items-center justify-center">
                     <span
-                      className={`font-mono text-[10px] px-2 py-0.5 border font-semibold tracking-wider uppercase ${b.statusColor}`}
+                      className={`font-mono text-[10px] px-2.5 py-0.5 border font-semibold tracking-wider uppercase ${b.statusColor}`}
                     >
                       {b.status}
-                    </span>
-                    <span className="font-mono text-[9px] text-white/30 uppercase">
-                      {b.date}
                     </span>
                   </div>
                 </CornerFrame>
@@ -141,7 +127,7 @@ export function Section05Badges() {
             className="px-8 py-3.5 bg-white/5 hover:bg-cyan-400/10 border border-white/20 hover:border-cyan-400 text-white font-mono text-xs uppercase tracking-widest transition-all"
             data-cursor="ALL BADGES"
           >
-            VIEW COMPLETE BADGE INDEX &rarr;
+            ALL BADGES &rarr;
           </Link>
         </div>
       </div>

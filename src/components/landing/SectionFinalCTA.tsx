@@ -16,10 +16,6 @@ export function SectionFinalCTA() {
 
       {/* Center Cinematic Action */}
       <div className="relative z-10 max-w-4xl mx-auto text-center space-y-8">
-        <span className="font-mono text-xs sm:text-sm text-cyan-400 font-bold uppercase tracking-widest block">
-          START LEARNING
-        </span>
-
         <h2 className="font-condensed font-black text-6xl sm:text-8xl md:text-9xl lg:text-[11rem] tracking-tighter text-white uppercase leading-[0.82] select-none">
           CLASS ROYALE
         </h2>

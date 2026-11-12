@@ -21,9 +21,7 @@ export function Section06Clans() {
         {/* Section Header */}
         <SectionHeader
           number="06"
-          category="PEER COHORTS"
           title="LEARN TOGETHER."
-          subtitle="University classes and competitive study clans driven by collective subject mastery."
         />
 
         <TechnicalBorder />
@@ -35,7 +33,7 @@ export function Section06Clans() {
             <CornerFrame size={14} borderColor="border-white/20" className="p-8 bg-[#08090d] border border-white/10 flex flex-col justify-between h-full space-y-8">
               <div className="space-y-4">
                 <div className="flex items-center justify-between font-mono text-xs text-white/40 uppercase">
-                  <span>COHORT // CLASSROOM</span>
+                  <span>COHORT</span>
                   <Crosshair />
                 </div>
 
@@ -47,26 +45,17 @@ export function Section06Clans() {
                     DEVOPS BATCH 3
                   </h3>
                 </div>
-
-                <div className="flex items-center gap-3 font-mono text-xs text-white/40">
-                  <span>CODE: <code className="text-white">CR-DEVOPS-26</code></span>
-                  <span>•</span>
-                  <span>128 ENROLLED</span>
-                </div>
               </div>
 
               {/* Clan Average Mastery Gauge */}
               <div className="p-5 bg-white/[0.02] border border-white/10 space-y-3">
                 <div className="flex items-center justify-between font-mono text-xs">
-                  <span className="text-white/40">COHORT SYLLABUS RETENTION</span>
+                  <span className="text-white/40">RETENTION</span>
                   <span className="text-emerald-400 font-bold">76% AVERAGE</span>
                 </div>
                 <div className="w-full h-1.5 bg-white/10 overflow-hidden">
                   <div className="h-full bg-gradient-to-r from-emerald-400 to-cyan-400 w-[76%]" />
                 </div>
-                <span className="font-tech text-xs text-white/40 uppercase block">
-                  ACTIVE SPRINTS: CI/CD PIPELINES &amp; KUBERNETES CNI
-                </span>
               </div>
 
               <div className="pt-2">
@@ -76,7 +65,7 @@ export function Section06Clans() {
                   className="w-full py-3.5 px-4 bg-white/5 hover:bg-cyan-400/10 border border-white/20 hover:border-cyan-400 text-white font-mono text-xs uppercase tracking-widest transition-all flex items-center justify-between group"
                   data-cursor="CLANS"
                 >
-                  <span>BROWSE ALL STUDY CLANS</span>
+                  <span>BROWSE CLANS</span>
                   <span className="text-cyan-400 group-hover:translate-x-1 transition-transform">&rarr;</span>
                 </Link>
               </div>
@@ -89,9 +78,8 @@ export function Section06Clans() {
               <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/10 pb-4">
                 <div className="flex items-center gap-2">
                   <span className="font-condensed font-extrabold text-xl text-white uppercase tracking-wider">
-                    ACADEMIC RANKINGS
+                    RANKINGS
                   </span>
-                  <span className="font-mono text-xs text-white/30 hidden sm:inline">// TOP SCHOLARS</span>
                 </div>
 
                 {/* Metric Filter Tabs */}
@@ -127,13 +115,8 @@ export function Section06Clans() {
                       <span className="text-sm font-bold text-cyan-400 w-6">
                         {m.rank}
                       </span>
-                      <div>
-                        <div className="font-condensed font-black text-xl sm:text-2xl text-white uppercase tracking-tight group-hover:text-cyan-200 transition-colors">
-                          {m.name}
-                        </div>
-                        <span className="text-[10px] text-white/40 block">
-                          ROLE: {m.role}
-                        </span>
+                      <div className="font-condensed font-black text-xl sm:text-2xl text-white uppercase tracking-tight group-hover:text-cyan-200 transition-colors">
+                        {m.name}
                       </div>
                     </div>
 
@@ -141,17 +124,9 @@ export function Section06Clans() {
                       <span className="font-condensed font-black text-2xl sm:text-3xl text-white block">
                         {activeMetric === "MASTERY" ? m.mastery : activeMetric === "ACCURACY" ? m.accuracy : m.growth}
                       </span>
-                      <span className="text-[9px] text-white/30 uppercase tracking-widest">
-                        {activeMetric}
-                      </span>
                     </div>
                   </div>
                 ))}
-              </div>
-
-              <div className="pt-2 border-t border-white/10 flex items-center justify-between text-xs font-mono text-white/40">
-                <span>FAIR ACADEMIC METRICS ONLY</span>
-                <span>NO XP GRINDING</span>
               </div>
             </CornerFrame>
           </div>

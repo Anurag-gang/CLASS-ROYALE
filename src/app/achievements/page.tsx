@@ -14,7 +14,7 @@ export default function AchievementsPage() {
   return (
     <div className="min-h-[60vh] flex flex-col items-center justify-center space-y-4">
       <span className="w-6 h-6 rounded-full border-2 border-violet-500 border-t-transparent animate-spin" />
-      <p className="font-hud text-xs text-zinc-400">
+      <p className="font-inter text-xs text-zinc-400">
         Redirecting to <Link href="/badges" className="text-cyan-400 underline">Subject Badges</Link>...
       </p>
     </div>

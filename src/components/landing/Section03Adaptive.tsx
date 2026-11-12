@@ -49,9 +49,7 @@ export function Section03Adaptive() {
         {/* Section Header */}
         <SectionHeader
           number="03"
-          category="ADAPTIVE ENGINE"
           title="YOUR NEXT QUESTION ADAPTS TO YOU."
-          subtitle="Empirical topic deficit analysis routes you to maximum retention."
         />
 
         <TechnicalBorder />
@@ -59,7 +57,7 @@ export function Section03Adaptive() {
         {/* Dynamic Topology Flow Visualization */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
           {/* Left: 4-Step Narrative Architecture */}
-          <div className="lg:col-span-6 space-y-4">
+          <div className="lg:col-span-6 space-y-3">
             {steps.map((s, idx) => {
               const isSelected = activeStep === idx;
               return (
@@ -69,27 +67,23 @@ export function Section03Adaptive() {
                     retroSound.playClick();
                     setActiveStep(idx);
                   }}
-                  className={`p-5 border transition-all cursor-pointer ${
+                  className={`p-4 sm:p-5 border transition-all cursor-pointer ${
                     isSelected
                       ? "border-cyan-400 bg-white/[0.04] shadow-[0_0_25px_rgba(6,182,212,0.1)]"
                       : "border-white/10 hover:border-white/30 bg-transparent opacity-60 hover:opacity-100"
                   }`}
                   data-cursor="INSPECT"
                 >
-                  <div className="flex items-center justify-between font-mono text-xs mb-2">
+                  <div className="flex items-center justify-between font-mono text-xs">
                     <span className="text-cyan-400 font-bold">STAGE // {s.number}</span>
                     <span className={`text-[10px] tracking-wider uppercase ${s.color}`}>
                       [{s.status}]
                     </span>
                   </div>
 
-                  <h3 className="font-condensed font-extrabold text-2xl text-white uppercase tracking-tight">
+                  <h3 className="font-condensed font-extrabold text-2xl text-white uppercase tracking-tight mt-1">
                     {s.title}
                   </h3>
-
-                  <p className="font-tech text-sm text-white/50 tracking-wider uppercase mt-1">
-                    {s.desc}
-                  </p>
                 </div>
               );
             })}
@@ -99,8 +93,8 @@ export function Section03Adaptive() {
           <div className="lg:col-span-6">
             <CornerFrame size={16} borderColor="border-cyan-500/40" className="p-8 bg-[#080a11] border border-white/10 space-y-6">
               <div className="flex items-center justify-between font-mono text-xs text-white/40 uppercase tracking-widest border-b border-white/10 pb-4">
-                <span>ACTIVE TOPIC TOPOLOGY</span>
-                <span className="text-cyan-400">STATE: OPTIMIZING</span>
+                <span>TOPIC TOPOLOGY</span>
+                <span className="text-cyan-400">OPTIMIZING</span>
               </div>
 
               {/* Vector Neural Node Map */}
@@ -137,20 +131,6 @@ export function Section03Adaptive() {
                   <polygon points="260,86 274,100 260,114 246,100" fill="#04202e" stroke="#22d3ee" strokeWidth="2" />
                   <text x="260" y="103" textAnchor="middle" fill="#38bdf8" fontSize="7" fontFamily="monospace" fontWeight="bold">DRILL</text>
                 </svg>
-
-                <div className="absolute bottom-3 left-4 font-mono text-[9px] text-white/40 uppercase">
-                  ACTIVE ROUTING // FOCUS: AVL ROTATIONS
-                </div>
-              </div>
-
-              {/* Rationale Callout Box */}
-              <div className="p-4 bg-white/[0.02] border border-white/10 space-y-2">
-                <span className="font-mono text-[10px] text-cyan-400 uppercase tracking-widest block font-bold">
-                  RECOMMENDATION RATIONALE
-                </span>
-                <p className="font-tech text-xs sm:text-sm text-white/70 tracking-wider uppercase leading-relaxed">
-                  &ldquo;Recent attempts show high mastery in Arrays (92%), but significant struggle in AVL tree balance rotations (54%). Next 8-minute quiz focused precisely on balance factors.&rdquo;
-                </p>
               </div>
 
               <Link

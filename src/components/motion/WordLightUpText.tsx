@@ -58,9 +58,9 @@ export function WordLightUpText({
       {words.map((w, idx) => (
         <span
           key={idx}
-          className="lightup-word inline-block will-change-transform text-white/20 transition-colors"
+          className="lightup-word inline-block align-baseline text-white/20 mr-[0.28em] last:mr-0 transition-colors will-change-[color,opacity]"
         >
-          {w}&nbsp;
+          {w}
         </span>
       ))}
     </p>

@@ -1,4 +1,6 @@
-// AI Provider Abstraction for Class Royale AI Agent "CR"
+// AI Provider Abstraction for Class Royale AI Agent "CR" (CR Intelligence)
+import { AIProviderFactory } from "@/lib/ai/providers/AIProviderFactory";
+import { AIMessage } from "@/lib/ai/types";
 
 export interface CRAgentPromptContext {
   systemPrompt: string;
@@ -13,98 +15,55 @@ export interface AIProvider {
 }
 
 class PluggableAIProvider implements AIProvider {
-  private endpoint?: string;
-  private apiKey?: string;
-  private modelName: string;
-
-  constructor() {
-    this.endpoint = process.env.CR_AI_ENDPOINT || process.env.AI_TUTOR_API_ENDPOINT;
-    this.apiKey =
-      process.env.CR_AI_KEY ||
-      process.env.AI_TUTOR_API_KEY ||
-      process.env.OPENAI_API_KEY ||
-      process.env.GEMINI_API_KEY;
-    this.modelName = process.env.CR_AI_MODEL || "gpt-4o-mini";
-  }
-
   public async generateResponse(context: CRAgentPromptContext): Promise<string> {
-    if (this.endpoint && this.apiKey) {
-      try {
-        const messages = [
-          { role: "system", content: context.systemPrompt },
-          ...context.conversationHistory.map((m) => ({
-            role: m.role === "model" ? "assistant" : m.role,
-            content: m.content,
-          })),
-          { role: "user", content: context.userMessage },
-        ];
+    try {
+      const provider = await AIProviderFactory.getProvider();
+      const messages: AIMessage[] = [
+        { role: "system", content: context.systemPrompt },
+        ...context.conversationHistory.map((m) => ({
+          role: (m.role === "model" ? "assistant" : m.role) as "user" | "assistant",
+          content: m.content,
+        })),
+        { role: "user", content: context.userMessage },
+      ];
 
-        const res = await fetch(this.endpoint, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${this.apiKey}`,
-          },
-          body: JSON.stringify({
-            model: this.modelName,
-            messages,
-            temperature: 0.7,
-          }),
-        });
-
-        if (res.ok) {
-          const data = await res.json();
-          const reply =
-            data.choices?.[0]?.message?.content ||
-            data.candidates?.[0]?.content?.parts?.[0]?.text;
-          if (reply) return reply;
-        }
-      } catch (err) {
-        console.warn("External AI call failed, switching to local CR intelligence engine:", err);
+      const res = await provider.chat(messages, { temperature: 0.7, maxTokens: 128 });
+      if (res.content && res.content.trim()) {
+        return res.content.trim();
       }
+    } catch (err) {
+      console.warn("[CR Intelligence] Colibri/Primary provider call failed, falling back to local strategist engine:", err);
     }
 
     return this.localEngineFallback(context.userMessage, context.learningContext);
   }
 
   public async generateStructured<T>(context: CRAgentPromptContext, schemaPrompt: string): Promise<T | null> {
-    if (this.endpoint && this.apiKey) {
-      try {
-        const messages = [
-          { role: "system", content: `${context.systemPrompt}\n\nIMPORTANT: Output ONLY valid JSON matching this schema:\n${schemaPrompt}` },
-          ...context.conversationHistory.map((m) => ({
-            role: m.role === "model" ? "assistant" : m.role,
-            content: m.content,
-          })),
-          { role: "user", content: context.userMessage },
-        ];
+    try {
+      const provider = await AIProviderFactory.getProvider();
+      const messages: AIMessage[] = [
+        {
+          role: "system",
+          content: `${context.systemPrompt}\n\nIMPORTANT: Output ONLY valid JSON matching this schema:\n${schemaPrompt}`,
+        },
+        ...context.conversationHistory.map((m) => ({
+          role: (m.role === "model" ? "assistant" : m.role) as "user" | "assistant",
+          content: m.content,
+        })),
+        { role: "user", content: context.userMessage },
+      ];
 
-        const res = await fetch(this.endpoint, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${this.apiKey}`,
-          },
-          body: JSON.stringify({
-            model: this.modelName,
-            messages,
-            temperature: 0.3,
-            response_format: { type: "json_object" },
-          }),
-        });
+      const res = await provider.chat(messages, {
+        temperature: 0.2,
+        maxTokens: 256,
+        responseFormat: { type: "json_object" },
+      });
 
-        if (res.ok) {
-          const data = await res.json();
-          const raw =
-            data.choices?.[0]?.message?.content ||
-            data.candidates?.[0]?.content?.parts?.[0]?.text;
-          if (raw) {
-            return JSON.parse(raw) as T;
-          }
-        }
-      } catch (err) {
-        console.warn("External structured AI call failed, falling back to local generator:", err);
+      if (res.content) {
+        return JSON.parse(res.content) as T;
       }
+    } catch (err) {
+      console.warn("[CR Intelligence] Structured generation failed, falling back to null:", err);
     }
 
     return null;

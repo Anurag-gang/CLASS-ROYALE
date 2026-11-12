@@ -1,0 +1,68 @@
+{
+  "totalQuestions": 210,
+  "validatedQuestions": 210,
+  "flaggedQuestions": 0,
+  "subjectBreakdown": {
+    "data-structures-and-algorithms": {
+      "total": 35,
+      "easy": 12,
+      "medium": 14,
+      "hard": 7,
+      "boss": 2,
+      "flagged": 0
+    },
+    "database-management-systems": {
+      "total": 35,
+      "easy": 12,
+      "medium": 14,
+      "hard": 7,
+      "boss": 2,
+      "flagged": 0
+    },
+    "operating-systems": {
+      "total": 35,
+      "easy": 12,
+      "medium": 14,
+      "hard": 7,
+      "boss": 2,
+      "flagged": 0
+    },
+    "computer-networks": {
+      "total": 35,
+      "easy": 12,
+      "medium": 14,
+      "hard": 7,
+      "boss": 2,
+      "flagged": 0
+    },
+    "ai-and-machine-learning": {
+      "total": 35,
+      "easy": 12,
+      "medium": 14,
+      "hard": 7,
+      "boss": 2,
+      "flagged": 0
+    },
+    "web-dev-and-devops": {
+      "total": 35,
+      "easy": 12,
+      "medium": 14,
+      "hard": 7,
+      "boss": 2,
+      "flagged": 0
+    }
+  },
+  "flaggedDetails": [],
+  "hintsCoverage": {
+    "withHint": 210,
+    "missingHint": 0
+  },
+  "explanationsCoverage": {
+    "withExplanation": 210,
+    "missingExplanation": 0
+  },
+  "misconceptionsCoverage": {
+    "withMisconception": 210,
+    "missingMisconception": 0
+  }
+}

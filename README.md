@@ -40,8 +40,8 @@ NODE_ENV="development"
 # Python ML Microservice
 ML_SERVICE_URL="http://127.0.0.1:8000"
 
-# Optional Cloud LLM API Key (OpenRouter)
-OPENROUTER_API_KEY=""
+# AI Engine Provider
+AI_PROVIDER="socratic"
 ```
 
 ### 3. Launching the Services

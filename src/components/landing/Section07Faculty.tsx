@@ -25,17 +25,16 @@ export function Section07Faculty() {
         {/* Section Header with 3-Layer Parallax */}
         <SectionHeader
           title="SEE WHERE YOUR CLASS NEEDS HELP."
-          subtitle="Real-time curricular struggle points and automated remediation diagnostics for faculty."
         />
 
         <TechnicalBorder />
 
         {/* Minimal Professional Faculty Console Preview */}
         <CornerFrame size={16} borderColor="border-white/20" className="p-8 sm:p-12 bg-[#08090d] border border-white/10 space-y-8">
-          <div className="flex flex-wrap items-center justify-between gap-4 font-mono text-xs text-white/40 uppercase tracking-widest border-b border-white/10 pb-4">
+          <div className="flex items-center justify-between font-mono text-xs text-white/40 uppercase tracking-widest border-b border-white/10 pb-4">
             <div className="flex items-center gap-3">
               <span className="w-2 h-2 rounded-full bg-cyan-400" />
-              <span className="text-white font-bold">FACULTY COMMAND CENTER</span>
+              <span className="text-white font-bold">FACULTY CONSOLE</span>
             </div>
             <Crosshair />
           </div>
@@ -54,9 +53,6 @@ export function Section07Faculty() {
                 >
                   <AnimatedCounterText value={kpi.num} suffix={kpi.suffix} />
                 </div>
-                <span className="font-mono text-[9px] text-white/40 block">
-                  {kpi.delta}
-                </span>
               </div>
             ))}
           </div>
@@ -65,9 +61,8 @@ export function Section07Faculty() {
           <div className="p-5 bg-amber-950/10 border border-amber-500/20 space-y-4">
             <div className="flex items-center justify-between font-mono text-xs text-amber-300">
               <span className="font-bold uppercase tracking-wider">
-                DEFICIT SIGNALS REQUIRING ATTENTION
+                DEFICIT SIGNALS
               </span>
-              <span className="text-[10px] uppercase font-mono">AUTOMATED SIGNAL</span>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -80,9 +75,6 @@ export function Section07Faculty() {
                   <div className="w-full h-1 bg-white/10 overflow-hidden">
                     <div className="h-full bg-amber-500" style={{ width: `${wt.accuracy}%` }} />
                   </div>
-                  <span className="font-mono text-[10px] text-white/40 block">
-                    {wt.strugglingCount} STUDENTS STRUGGLING // DRILL RECOMMENDED
-                  </span>
                 </div>
               ))}
             </div>

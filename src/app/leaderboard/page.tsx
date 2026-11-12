@@ -33,17 +33,10 @@ export default function LeaderboardPage() {
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-16 space-y-10">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-white/[0.08]">
-        <div className="space-y-2">
-          <span className="font-mono text-xs text-amber-400 uppercase tracking-widest font-semibold flex items-center gap-2">
-            <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
-            ACADEMIC BENCHMARK
-          </span>
+        <div>
           <h1 className="font-condensed font-black text-4xl sm:text-5xl uppercase tracking-tight text-white">
-            Scholastic Leaderboard
+            Leaderboard
           </h1>
-          <p className="font-body text-xs sm:text-sm text-zinc-400 max-w-xl">
-            Rankings calibrated on verified subject mastery, answer precision, and empirical syllabus progress.
-          </p>
         </div>
 
         {/* Metric Switcher */}
@@ -58,7 +51,7 @@ export default function LeaderboardPage() {
               key={m.id}
               type="button"
               onClick={() => handleMetricChange(m.id as MetricType)}
-              className={`px-3.5 py-1.5 rounded-lg font-display text-xs font-semibold transition-all whitespace-nowrap ${
+              className={`px-3.5 py-1.5 rounded-lg font-inter text-xs font-semibold transition-all whitespace-nowrap ${
                 activeMetric === m.id
                   ? "bg-violet-600 text-white shadow-sm"
                   : "text-zinc-400 hover:text-white"
@@ -74,7 +67,7 @@ export default function LeaderboardPage() {
       {loading ? (
         <div className="min-h-[50vh] flex flex-col items-center justify-center space-y-3">
           <span className="w-6 h-6 rounded-full border-2 border-violet-500 border-t-transparent animate-spin" />
-          <span className="font-hud text-xs text-zinc-400">Loading academic rankings...</span>
+          <span className="font-inter text-xs text-zinc-400 font-medium">Loading academic rankings...</span>
         </div>
       ) : (
         <div className="rounded-2xl border border-white/10 bg-[#070c20]/60 divide-y divide-white/5 overflow-hidden backdrop-blur-xl">
@@ -99,23 +92,23 @@ export default function LeaderboardPage() {
               >
                 <div className="flex items-center gap-4">
                   <span
-                    className={`w-7 h-7 rounded-lg flex items-center justify-center font-hud text-xs shrink-0 ${rankBadgeStyle}`}
+                    className={`w-7 h-7 rounded-lg flex items-center justify-center font-mono font-bold text-xs shrink-0 ${rankBadgeStyle}`}
                   >
                     #{student.rank}
                   </span>
 
                   <div>
                     <div className="flex items-center gap-2">
-                      <span className="font-display font-semibold text-sm text-white">
+                      <span className="font-inter font-semibold text-sm text-white">
                         {student.name}
                       </span>
                       {student.isCurrentUser && (
-                        <span className="text-[9px] font-mono px-1.5 py-0.2 rounded bg-cyan-950 text-cyan-300 border border-cyan-500/30">
+                        <span className="text-[10px] font-inter font-semibold px-2 py-0.5 rounded-full bg-cyan-950 text-cyan-300 border border-cyan-500/30">
                           YOU
                         </span>
                       )}
                     </div>
-                    <span className="text-xs font-mono text-zinc-500 block">
+                    <span className="text-xs font-inter text-zinc-400 block mt-0.5">
                       @{student.username} • {student.department}
                     </span>
                   </div>
@@ -123,7 +116,7 @@ export default function LeaderboardPage() {
 
                 {/* Score & Secondary Stats */}
                 <div className="flex items-center gap-6 text-right">
-                  <div className="hidden sm:block text-xs font-mono text-zinc-400 space-y-0.5">
+                  <div className="hidden sm:block text-xs font-inter text-zinc-400 space-y-0.5">
                     <div>{student.accuracy}% Accuracy</div>
                     <div className="text-[11px] text-zinc-500">{student.quizzesCompleted} Quizzes</div>
                   </div>
@@ -135,7 +128,7 @@ export default function LeaderboardPage() {
                       {activeMetric === "completion" && `${student.quizzesCompleted} done`}
                       {activeMetric === "improvement" && `+${student.improvementRate}%`}
                     </div>
-                    <span className="text-[10px] font-mono text-zinc-500 uppercase">
+                    <span className="text-[10px] font-inter text-zinc-400 uppercase font-medium tracking-wider">
                       {activeMetric}
                     </span>
                   </div>

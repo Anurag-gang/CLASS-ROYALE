@@ -6,7 +6,7 @@ This document defines the architectural specification, dataset curation strategy
 
 ## 1. Architectural Strategy: Why & When to Fine-Tune
 
-Currently, CR runs on top of high-capability frontier and mid-sized models accessed via **OpenRouter** (e.g. `anthropic/claude-3.5-haiku` and `google/gemini-2.5-flash`), with structured schema enforcement (Zod) and Course-Scoped RAG.
+Currently, CR runs on top of high-capability frontier and mid-sized models backed by the Class Royale Socratic Pedagogy Engine (e.g. `anthropic/claude-3.5-haiku` and `google/gemini-2.5-flash`), with structured schema enforcement (Zod) and Course-Scoped RAG.
 
 ### Comparison Matrix
 

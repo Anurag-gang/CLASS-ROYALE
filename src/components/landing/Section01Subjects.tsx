@@ -162,9 +162,7 @@ export function Section01Subjects() {
         {/* Section Header */}
         <SectionHeader
           number="01"
-          category="CURRICULAR TERRITORIES"
           title="ENGINEERING, ORGANIZED."
-          subtitle="Explore foundational domains mapped into structured active retrieval sectors."
         />
 
         <TechnicalBorder />
@@ -224,13 +222,8 @@ export function Section01Subjects() {
             >
               {/* Header */}
               <div className="flex items-center justify-between border-b border-white/10 pb-4">
-                <div className="space-y-1">
-                  <span className="font-mono text-[10px] text-cyan-400 uppercase tracking-widest">
-                    {current.sector}
-                  </span>
-                  <div className="font-condensed font-black text-2xl sm:text-3xl text-white uppercase">
-                    {current.title}
-                  </div>
+                <div className="font-condensed font-black text-2xl sm:text-3xl text-white uppercase">
+                  {current.title}
                 </div>
                 <Crosshair />
               </div>
@@ -238,15 +231,12 @@ export function Section01Subjects() {
               {/* Vector Topological Diagram */}
               <div className="relative h-44 sm:h-52 w-full bg-[#05060a] border border-white/5 p-4 flex items-center justify-center">
                 {current.diagram}
-                <span className="absolute bottom-2 right-2 font-mono text-[9px] text-white/30 uppercase">
-                  TOPOLOGY // VECTOR PREVIEW
-                </span>
               </div>
 
               {/* Live Syllabus Telemetry Metrics */}
               <div className="space-y-4 pt-2">
                 <div className="flex items-center justify-between font-mono text-xs">
-                  <span className="text-white/50">COHORT MASTERY</span>
+                  <span className="text-white/50">{current.code}</span>
                   <span className="text-cyan-300 font-bold">{current.mastery}%</span>
                 </div>
 
@@ -259,11 +249,9 @@ export function Section01Subjects() {
 
                 <div className="grid grid-cols-2 gap-4 pt-2 border-t border-white/10 text-xs font-mono">
                   <div>
-                    <span className="text-white/40 block text-[10px]">ASSESSMENTS</span>
                     <span className="text-white font-bold">{current.quizzes} QUIZZES</span>
                   </div>
                   <div>
-                    <span className="text-white/40 block text-[10px]">SUBTOPICS</span>
                     <span className="text-white font-bold">{current.topics} TOPICS</span>
                   </div>
                 </div>
@@ -275,7 +263,7 @@ export function Section01Subjects() {
                     className="w-full py-3 px-4 bg-white/5 hover:bg-cyan-400/10 border border-white/20 hover:border-cyan-400 text-white font-mono text-xs uppercase tracking-widest transition-all flex items-center justify-between group"
                     data-cursor="EXPLORE"
                   >
-                    <span>ENTER {current.code} SECTOR</span>
+                    <span>ENTER SECTOR</span>
                     <span className="text-cyan-400 group-hover:translate-x-1 transition-transform">&rarr;</span>
                   </Link>
                 </div>

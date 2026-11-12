@@ -1,25 +1,107 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { motion, AnimatePresence, type Variants } from "framer-motion";
 import {
   Menu,
   X,
+  LogOut,
+  User as UserIcon,
+  ChevronRight,
   BookOpen,
   Users,
   Trophy,
   Sparkles,
   LayoutDashboard,
   GraduationCap,
-  LogOut,
-  User as UserIcon,
-  Compass,
-  ChevronRight,
-  Shield,
+  Award,
 } from "lucide-react";
 import { retroSound } from "@/lib/sound";
-import { ThreeUIDockNav } from "./ThreeUIDockNav";
+
+interface MenuLinkItem {
+  label: string;
+  href: string;
+  icon: React.ComponentType<{ className?: string }>;
+  desc: string;
+}
+
+interface MenuSection {
+  category: string;
+  links: MenuLinkItem[];
+}
+
+const MENU_SECTIONS: MenuSection[] = [
+  {
+    category: "PLATFORM",
+    links: [
+      { label: "Subjects & Syllabus", href: "/subjects", icon: BookOpen, desc: "" },
+      { label: "How It Works", href: "/how-it-works", icon: Sparkles, desc: "" },
+      { label: "AI Recommendations", href: "/recommendations", icon: Sparkles, desc: "" },
+    ],
+  },
+  {
+    category: "MASTERY",
+    links: [
+      { label: "Study Clans", href: "/clans", icon: Users, desc: "" },
+      { label: "Leaderboard", href: "/leaderboard", icon: Trophy, desc: "" },
+      { label: "Verified Badges", href: "/badges", icon: Award, desc: "" },
+    ],
+  },
+  {
+    category: "PORTALS",
+    links: [
+      { label: "Student Dashboard", href: "/dashboard", icon: LayoutDashboard, desc: "" },
+      { label: "Faculty Portal", href: "/faculty/dashboard", icon: GraduationCap, desc: "" },
+      { label: "User Profile", href: "/profile", icon: UserIcon, desc: "" },
+    ],
+  },
+];
+
+const backdropVariants: Variants = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { duration: 0.25 } },
+  exit: { opacity: 0, transition: { duration: 0.2, delay: 0.15 } },
+};
+
+const drawerVariants: Variants = {
+  hidden: { opacity: 0, y: -16 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.35,
+      ease: [0.16, 1, 0.3, 1] as const,
+      staggerChildren: 0.07,
+      delayChildren: 0.06,
+    },
+  },
+  exit: {
+    opacity: 0,
+    y: -16,
+    transition: {
+      duration: 0.22,
+      ease: [0.7, 0, 0.84, 0] as const,
+      staggerChildren: 0.04,
+      staggerDirection: -1,
+    },
+  },
+};
+
+const itemVariants: Variants = {
+  hidden: { opacity: 0, y: 22 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.35, ease: [0.16, 1, 0.3, 1] as const },
+  },
+  exit: {
+    opacity: 0,
+    y: -12,
+    transition: { duration: 0.18, ease: "easeIn" },
+  },
+};
 
 export function UnifiedNavbar() {
   const pathname = usePathname();
@@ -31,6 +113,10 @@ export function UnifiedNavbar() {
     name?: string;
   } | null>(null);
   const [scrolled, setScrolled] = useState(false);
+
+  const menuRef = useRef<HTMLDivElement>(null);
+  const triggerButtonRef = useRef<HTMLButtonElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
 
   // Check current session
   useEffect(() => {
@@ -55,29 +141,64 @@ export function UnifiedNavbar() {
     const handleScroll = () => {
       setScrolled(window.scrollY > 20);
     };
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Close menu on Escape
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setMenuOpen(false);
-    };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, []);
-
-  // Lock body scroll when mobile menu is open
+  // Lock body scroll and manage focus trap
   useEffect(() => {
     if (menuOpen) {
       document.body.style.overflow = "hidden";
+      // Focus close button on open
+      setTimeout(() => {
+        closeButtonRef.current?.focus();
+      }, 50);
     } else {
       document.body.style.overflow = "";
+      triggerButtonRef.current?.focus();
     }
     return () => {
       document.body.style.overflow = "";
     };
+  }, [menuOpen]);
+
+  // Keyboard navigation: Escape to close & Focus trap inside modal
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (!menuOpen) return;
+
+      if (e.key === "Escape") {
+        e.preventDefault();
+        retroSound.playClick();
+        setMenuOpen(false);
+        return;
+      }
+
+      if (e.key === "Tab" && menuRef.current) {
+        const focusableElements = menuRef.current.querySelectorAll<HTMLElement>(
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        );
+        if (focusableElements.length === 0) return;
+
+        const firstElement = focusableElements[0];
+        const lastElement = focusableElements[focusableElements.length - 1];
+
+        if (e.shiftKey) {
+          if (document.activeElement === firstElement) {
+            e.preventDefault();
+            lastElement.focus();
+          }
+        } else {
+          if (document.activeElement === lastElement) {
+            e.preventDefault();
+            firstElement.focus();
+          }
+        }
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
   }, [menuOpen]);
 
   const handleLogout = async () => {
@@ -92,21 +213,17 @@ export function UnifiedNavbar() {
     }
   };
 
-  const navLinks = [
-    { label: "Subjects", href: "/subjects" },
-    { label: "How It Works", href: "/how-it-works" },
-    { label: "Clans", href: "/clans" },
-    { label: "Leaderboard", href: "/leaderboard" },
-    { label: "Recommendations", href: "/recommendations" },
-    { label: "Faculty", href: "/faculty/dashboard" },
-  ];
+  const closeMenu = () => {
+    retroSound.playClick();
+    setMenuOpen(false);
+  };
 
   return (
     <>
       <header
         className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
           scrolled
-            ? "bg-[#050505]/85 backdrop-blur-md border-b border-white/[0.07] py-3.5"
+            ? "bg-[#050505]/90 backdrop-blur-md border-b border-white/[0.08] py-3.5"
             : "bg-transparent py-5"
         }`}
       >
@@ -121,41 +238,17 @@ export function UnifiedNavbar() {
             <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 opacity-80 group-hover:scale-150 transition-transform" />
           </Link>
 
-          {/* ThreeUI Animated Top Dock */}
-          <ThreeUIDockNav />
-
-          {/* Desktop Navigation Links */}
-          <nav className="hidden lg:flex items-center gap-7 text-xs font-mono tracking-widest uppercase">
-            {navLinks.map((link) => {
-              const isActive = pathname === link.href;
-              return (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  onClick={() => retroSound.playClick()}
-                  className={`cr-link transition-colors ${
-                    isActive
-                      ? "text-cyan-400 font-bold"
-                      : "text-white/60 hover:text-white"
-                  }`}
-                >
-                  {link.label}
-                </Link>
-              );
-            })}
-          </nav>
-
-          {/* Desktop User Action Dock */}
-          <div className="hidden sm:flex items-center gap-4 text-xs font-mono uppercase tracking-wider">
+          {/* Streamlined Right Controls: User Session + Consolidated Menu Trigger */}
+          <div className="flex items-center gap-3 sm:gap-4 text-xs font-mono uppercase tracking-wider">
             {currentUser ? (
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 sm:gap-3">
                 <Link
                   href={currentUser.role === "FACULTY" ? "/faculty/dashboard" : "/dashboard"}
                   onClick={() => retroSound.playClick()}
                   className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 hover:border-cyan-400/40 text-white transition-all"
                 >
                   <UserIcon className="w-3.5 h-3.5 text-cyan-400" />
-                  <span className="font-semibold">{currentUser.username}</span>
+                  <span className="font-semibold hidden sm:inline">{currentUser.username}</span>
                   {currentUser.role && (
                     <span className="px-1.5 py-0.5 text-[9px] bg-cyan-400/10 text-cyan-300 rounded font-mono border border-cyan-400/20">
                       {currentUser.role}
@@ -173,237 +266,137 @@ export function UnifiedNavbar() {
                 </button>
               </div>
             ) : (
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 sm:gap-3">
                 <Link
                   href="/login"
                   onClick={() => retroSound.playClick()}
-                  className="cr-link text-white/60 hover:text-white px-2 py-1 transition-colors"
+                  className="cr-link text-white/60 hover:text-white px-2 py-1 transition-colors hidden sm:inline-block"
                 >
                   Login
                 </Link>
                 <Link
                   href="/signup"
                   onClick={() => retroSound.playClick()}
-                  className="px-3.5 py-1.5 rounded-lg bg-cyan-400 hover:bg-cyan-300 text-slate-950 font-bold tracking-wider transition-colors shadow-[0_0_15px_rgba(6,182,212,0.3)]"
+                  className="px-3 py-1.5 rounded-lg bg-cyan-400 hover:bg-cyan-300 text-slate-950 font-bold tracking-wider transition-colors shadow-[0_0_15px_rgba(6,182,212,0.3)] text-[11px] sm:text-xs"
                 >
                   Get Started
                 </Link>
               </div>
             )}
 
-            {/* Menu Trigger Button */}
+            {/* Consolidated Collapsible Menu Trigger */}
             <button
+              ref={triggerButtonRef}
               type="button"
               onClick={() => {
                 retroSound.playClick();
-                setMenuOpen(true);
+                setMenuOpen((prev) => !prev);
               }}
-              className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/15 hover:border-cyan-400/50 text-white transition-all"
-              aria-label="Open Navigation Index"
+              aria-expanded={menuOpen}
+              aria-controls="collapsible-nav-menu"
+              aria-label={menuOpen ? "Close navigation menu" : "Open navigation menu"}
+              className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/15 hover:border-cyan-400/50 text-white transition-all focus:outline-none focus:ring-2 focus:ring-cyan-400"
             >
               <Menu className="w-4 h-4 text-cyan-400" />
-              <span className="hidden md:inline text-[11px] font-semibold">INDEX</span>
-            </button>
-          </div>
-
-          {/* Mobile Menu Hamburger */}
-          <div className="flex items-center gap-2 sm:hidden">
-            <button
-              type="button"
-              onClick={() => {
-                retroSound.playClick();
-                setMenuOpen(true);
-              }}
-              className="p-2 rounded-lg bg-white/5 border border-white/10 text-white"
-              aria-label="Toggle menu"
-            >
-              <Menu className="w-5 h-5 text-cyan-400" />
+              <span className="text-[11px] font-semibold tracking-wider">MENU</span>
             </button>
           </div>
         </div>
       </header>
 
-      {/* Full-Screen Navigation Index Overlay */}
-      {menuOpen && (
-        <div
-          role="dialog"
-          aria-modal="true"
-          className="fixed inset-0 z-50 bg-[#050505]/95 backdrop-blur-2xl flex flex-col justify-between p-6 sm:p-12 md:p-16 animate-in fade-in duration-200"
-        >
-          {/* Top Bar inside Overlay */}
-          <div className="flex items-center justify-between text-xs font-mono tracking-widest text-white/40 uppercase border-b border-white/10 pb-6">
-            <div className="flex items-center gap-3">
-              <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
-              <span className="text-white/80 font-bold">CLASS ROYALE // NAVIGATION INDEX</span>
-            </div>
-
-            <button
-              type="button"
-              onClick={() => {
-                retroSound.playClick();
-                setMenuOpen(false);
-              }}
-              className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/5 border border-white/20 text-white hover:text-cyan-400 hover:border-cyan-400 transition-all font-mono text-xs uppercase"
+      {/* Lightweight Collapsible Menu Drawer with Staggered Rise-Up Animation */}
+      <AnimatePresence>
+        {menuOpen && (
+          <motion.div
+            key="nav-backdrop"
+            variants={backdropVariants}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+            className="fixed inset-0 z-50 bg-[#050505]/95 backdrop-blur-2xl flex flex-col justify-between p-6 sm:p-12 md:p-16 select-none"
+            onClick={(e) => {
+              if (e.target === e.currentTarget) closeMenu();
+            }}
+          >
+            <motion.div
+              ref={menuRef}
+              id="collapsible-nav-menu"
+              role="dialog"
+              aria-modal="true"
+              aria-label="Navigation Index"
+              variants={drawerVariants}
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+              className="flex flex-col justify-between h-full w-full max-w-6xl mx-auto"
             >
-              <X className="w-4 h-4" />
-              <span>CLOSE [ESC]</span>
-            </button>
-          </div>
+              {/* Header inside Menu */}
+              <div className="flex items-center justify-between text-xs font-mono tracking-widest text-white/50 uppercase border-b border-white/10 pb-5">
+                <div className="flex items-center gap-3">
+                  <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse shadow-[0_0_10px_#22d3ee]" />
+                  <span className="text-white/90 font-bold">CLASS ROYALE // NAVIGATION HUB</span>
+                </div>
 
-          {/* Main Index Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 py-8 my-auto max-w-6xl w-full mx-auto">
-            {/* Column 1: Core Curricular Navigation */}
-            <div className="space-y-4">
-              <span className="text-[10px] font-mono text-cyan-400 uppercase tracking-widest block font-bold">
-                01 // ACADEMIC PLATFORM
-              </span>
-              <ul className="space-y-3 font-condensed font-black text-2xl sm:text-3xl text-white uppercase">
-                <li>
-                  <Link
-                    href="/subjects"
-                    onClick={() => {
-                      retroSound.playClick();
-                      setMenuOpen(false);
-                    }}
-                    className="group flex items-center justify-between hover:text-cyan-400 transition-colors"
-                  >
-                    <span>SUBJECTS & SYLLABUS</span>
-                    <ChevronRight className="w-5 h-5 opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all text-cyan-400" />
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/how-it-works"
-                    onClick={() => {
-                      retroSound.playClick();
-                      setMenuOpen(false);
-                    }}
-                    className="group flex items-center justify-between hover:text-cyan-400 transition-colors"
-                  >
-                    <span>HOW IT WORKS</span>
-                    <ChevronRight className="w-5 h-5 opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all text-cyan-400" />
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/recommendations"
-                    onClick={() => {
-                      retroSound.playClick();
-                      setMenuOpen(false);
-                    }}
-                    className="group flex items-center justify-between hover:text-cyan-400 transition-colors"
-                  >
-                    <span>AI RECOMMENDATIONS</span>
-                    <ChevronRight className="w-5 h-5 opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all text-cyan-400" />
-                  </Link>
-                </li>
-              </ul>
-            </div>
+                <button
+                  ref={closeButtonRef}
+                  type="button"
+                  onClick={closeMenu}
+                  aria-label="Close menu"
+                  className="flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/20 hover:border-cyan-400/50 text-white hover:text-cyan-400 transition-all font-mono text-xs uppercase focus:outline-none focus:ring-2 focus:ring-cyan-400"
+                >
+                  <X className="w-4 h-4" />
+                  <span>CLOSE [ESC]</span>
+                </button>
+              </div>
 
-            {/* Column 2: Collaborative Mastery */}
-            <div className="space-y-4">
-              <span className="text-[10px] font-mono text-cyan-400 uppercase tracking-widest block font-bold">
-                02 // COLLABORATION & MASTERY
-              </span>
-              <ul className="space-y-3 font-condensed font-black text-2xl sm:text-3xl text-white uppercase">
-                <li>
-                  <Link
-                    href="/clans"
-                    onClick={() => {
-                      retroSound.playClick();
-                      setMenuOpen(false);
-                    }}
-                    className="group flex items-center justify-between hover:text-cyan-400 transition-colors"
-                  >
-                    <span>STUDY CLANS</span>
-                    <ChevronRight className="w-5 h-5 opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all text-cyan-400" />
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/leaderboard"
-                    onClick={() => {
-                      retroSound.playClick();
-                      setMenuOpen(false);
-                    }}
-                    className="group flex items-center justify-between hover:text-cyan-400 transition-colors"
-                  >
-                    <span>LEADERBOARD</span>
-                    <ChevronRight className="w-5 h-5 opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all text-cyan-400" />
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/badges"
-                    onClick={() => {
-                      retroSound.playClick();
-                      setMenuOpen(false);
-                    }}
-                    className="group flex items-center justify-between hover:text-cyan-400 transition-colors"
-                  >
-                    <span>VERIFIED BADGES</span>
-                    <ChevronRight className="w-5 h-5 opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all text-cyan-400" />
-                  </Link>
-                </li>
-              </ul>
-            </div>
+              {/* Staggered Navigation Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 sm:gap-10 py-8 my-auto w-full">
+                {MENU_SECTIONS.map((section, sIdx) => (
+                  <motion.div key={sIdx} variants={itemVariants} className="space-y-4">
+                    <span className="text-[10px] font-mono text-cyan-400 uppercase tracking-widest block font-bold border-b border-white/5 pb-2">
+                      {section.category}
+                    </span>
+                    <ul className="space-y-3 font-condensed font-black text-2xl sm:text-3xl text-white uppercase">
+                      {section.links.map((link, lIdx) => {
+                        const Icon = link.icon;
+                        const isActive = pathname === link.href;
+                        return (
+                          <motion.li key={lIdx} variants={itemVariants}>
+                            <Link
+                              href={link.href}
+                              onClick={closeMenu}
+                              className={`group flex items-center justify-between py-1.5 transition-colors ${
+                                isActive ? "text-cyan-400 font-bold" : "text-white/80 hover:text-white"
+                              }`}
+                            >
+                              <div className="flex items-center gap-3">
+                                <Icon className="w-5 h-5 text-zinc-500 group-hover:text-cyan-400 transition-colors" />
+                                <span className="block leading-tight group-hover:translate-x-1 transition-transform">
+                                  {link.label}
+                                </span>
+                              </div>
+                              <ChevronRight className="w-4 h-4 opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all text-cyan-400" />
+                            </Link>
+                          </motion.li>
+                        );
+                      })}
+                    </ul>
+                  </motion.div>
+                ))}
+              </div>
 
-            {/* Column 3: Portals & Workspaces */}
-            <div className="space-y-4">
-              <span className="text-[10px] font-mono text-cyan-400 uppercase tracking-widest block font-bold">
-                03 // WORKSPACES
-              </span>
-              <ul className="space-y-3 font-condensed font-black text-2xl sm:text-3xl text-white uppercase">
-                <li>
-                  <Link
-                    href="/dashboard"
-                    onClick={() => {
-                      retroSound.playClick();
-                      setMenuOpen(false);
-                    }}
-                    className="group flex items-center justify-between hover:text-cyan-400 transition-colors"
-                  >
-                    <span>STUDENT DASHBOARD</span>
-                    <ChevronRight className="w-5 h-5 opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all text-cyan-400" />
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/faculty/dashboard"
-                    onClick={() => {
-                      retroSound.playClick();
-                      setMenuOpen(false);
-                    }}
-                    className="group flex items-center justify-between hover:text-cyan-400 transition-colors"
-                  >
-                    <span>FACULTY LMS PORTAL</span>
-                    <ChevronRight className="w-5 h-5 opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all text-cyan-400" />
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href={currentUser ? "/profile" : "/login"}
-                    onClick={() => {
-                      retroSound.playClick();
-                      setMenuOpen(false);
-                    }}
-                    className="group flex items-center justify-between hover:text-cyan-400 transition-colors"
-                  >
-                    <span>{currentUser ? "MY PROFILE" : "ACCOUNT SIGN IN"}</span>
-                    <ChevronRight className="w-5 h-5 opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all text-cyan-400" />
-                  </Link>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          {/* Footer inside Overlay */}
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-white/40 uppercase border-t border-white/10 pt-6">
-            <span>Engineering Education Platform // Next.js &amp; ML Adaptive Engine</span>
-            <span>Zero-Downtime Architecture</span>
-          </div>
-        </div>
-      )}
+              {/* Footer info */}
+              <motion.div
+                variants={itemVariants}
+                className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-white/40 uppercase border-t border-white/10 pt-5"
+              >
+                <span>Engineering Education Platform // Next.js &amp; ML Adaptive Engine</span>
+                <span className="text-cyan-400/70">Press [ESC] to Exit</span>
+              </motion.div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 }

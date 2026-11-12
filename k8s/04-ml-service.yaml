@@ -1,0 +1,105 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ml-service
+  namespace: class-royale
+  labels:
+    app.kubernetes.io/name: ml-service
+    app.kubernetes.io/part-of: class-royale
+    app.kubernetes.io/component: ml-engine
+spec:
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: ml-service
+  template:
+    metadata:
+      labels:
+        app: ml-service
+        app.kubernetes.io/name: ml-service
+        app.kubernetes.io/part-of: class-royale
+        app.kubernetes.io/component: ml-engine
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        fsGroup: 10001
+      containers:
+        - name: ml-service
+          image: class-royale-ml-service:latest
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: false
+            capabilities:
+              drop:
+                - ALL
+          ports:
+            - name: http-ml
+              containerPort: 8000
+              protocol: TCP
+          envFrom:
+            - configMapRef:
+                name: class-royale-ml-config
+          env:
+            - name: MISTRAL_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: class-royale-secrets
+                  key: MISTRAL_API_KEY
+                  optional: true
+          resources:
+            requests:
+              cpu: 250m
+              memory: 512Mi
+            limits:
+              cpu: 1000m
+              memory: 1536Mi
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 20
+            periodSeconds: 15
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 2
+          volumeMounts:
+            - name: artifacts-volume
+              mountPath: /app/artifacts
+      volumes:
+        - name: artifacts-volume
+          persistentVolumeClaim:
+            claimName: ml-artifacts-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ml-service
+  namespace: class-royale
+  labels:
+    app.kubernetes.io/name: ml-service
+    app.kubernetes.io/part-of: class-royale
+    app.kubernetes.io/component: ml-engine
+spec:
+  type: ClusterIP
+  selector:
+    app: ml-service
+  ports:
+    - name: http
+      port: 8000
+      targetPort: 8000
+      protocol: TCP

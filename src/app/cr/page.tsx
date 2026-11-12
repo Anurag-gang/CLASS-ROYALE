@@ -29,6 +29,7 @@ import StatusMark from "@/components/reactbits/StatusMark";
 import { retroSound } from "@/lib/sound";
 import { MLTelemetry } from "@/lib/ml/types";
 import { AutomaticSuggestion } from "@/lib/ai/orchestrator";
+import { SocratesAvatar } from "@/components/avatar/SocratesAvatar";
 
 interface MessageItem {
   id: string;
@@ -411,15 +412,16 @@ function CRChatContent() {
       <main className="flex-1 max-w-3xl w-full mx-auto px-4 pt-24 pb-48 space-y-8">
         {messages.length === 0 && (
           <div className="h-[65vh] flex flex-col justify-center items-center text-center space-y-6 select-none">
-            <div className="space-y-3">
+            <div className="space-y-4 flex flex-col items-center">
+              <SocratesAvatar size={96} status={loading ? "thinking" : "idle"} className="mb-1" />
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-950/40 border border-cyan-400/30 text-cyan-400 text-xs font-mono shadow-[0_0_15px_rgba(34,211,238,0.2)]">
                 <Brain className="w-3.5 h-3.5 animate-pulse" />
                 <span>ADAPTIVE ML ENGINE &bull; SOCRATIC ARCHITECTURE</span>
               </div>
               <h2 className="font-condensed font-black text-3xl sm:text-5xl uppercase tracking-tight text-white">
-                CR SOCRATIC AGENT
+                SOCRATES AI TUTOR
               </h2>
-              <p className="text-zinc-400 text-sm max-w-lg leading-relaxed">
+              <p className="text-zinc-400 text-sm max-w-lg leading-relaxed font-inter">
                 Autonomous academic reasoning engine. Diagnoses topic mastery via ML, enforces mathematical invariants, and provides actionable code breakdowns.
               </p>
             </div>
@@ -462,12 +464,19 @@ function CRChatContent() {
               >
                 {isUser ? (
                   /* User Message Capsule */
-                  <div className="bg-[#1c1d24] text-white px-4 py-2.5 rounded-2xl max-w-xl text-[15px] leading-relaxed shadow-sm font-normal border border-white/[0.06]">
+                  <div className="bg-[#1c1d24] text-white px-4 py-2.5 rounded-2xl max-w-xl text-[15px] leading-relaxed shadow-sm font-inter font-normal border border-white/[0.06]">
                     {m.content}
                   </div>
                 ) : (
                   /* Assistant Response Body */
-                  <div className="group relative w-full pt-2 space-y-4">
+                  <div className="group relative w-full pt-2 space-y-4 font-inter">
+                    <div className="flex items-center gap-2 pb-1">
+                      <SocratesAvatar
+                        size={28}
+                        status={loading && m.id === messages[messages.length - 1]?.id ? "speaking" : "idle"}
+                      />
+                      <span className="font-mono text-xs font-semibold tracking-wider text-cyan-400">SOCRATES</span>
+                    </div>
                     {/* ML Telemetry HUD Badge */}
                     {m.mlTelemetry && (
                       <MLTelemetryBadge telemetry={m.mlTelemetry} />

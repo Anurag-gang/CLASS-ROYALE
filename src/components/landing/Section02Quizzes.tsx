@@ -37,9 +37,7 @@ export function Section02Quizzes() {
         {/* Section Header */}
         <SectionHeader
           number="02"
-          category="ACTIVE RETRIEVAL ENGINE"
           title="TEST WHAT YOU KNOW."
-          subtitle="Distraction-free assessment console engineered for immediate cognitive feedback."
         />
 
         <TechnicalBorder />
@@ -47,16 +45,10 @@ export function Section02Quizzes() {
         {/* Giant In-Situ Interactive Quiz Console */}
         <CornerFrame size={16} borderColor="border-white/20" className="p-6 sm:p-10 md:p-14 bg-[#08090d] border border-white/10 space-y-8">
           {/* Console Header Bar */}
-          <div className="flex flex-wrap items-center justify-between gap-4 font-mono text-xs text-white/40 uppercase tracking-widest border-b border-white/10 pb-4">
-            <div className="flex items-center gap-3">
-              <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
-              <span className="text-cyan-400 font-bold">LIVE CONSOLE</span>
-              <span>//</span>
-              <span className="text-white/70">{question.domain}</span>
-            </div>
-
+          <div className="flex items-center justify-between font-mono text-xs text-white/40 uppercase tracking-widest border-b border-white/10 pb-4">
+            <span className="text-white/70">{question.domain}</span>
             <div className="flex items-center gap-4">
-              <span>QUESTION {question.index}</span>
+              <span>{question.index}</span>
               <Crosshair />
             </div>
           </div>

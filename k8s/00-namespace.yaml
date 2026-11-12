@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: class-royale
+  labels:
+    name: class-royale
+    app.kubernetes.io/name: class-royale
+    app.kubernetes.io/part-of: class-royale
+    pod-security.kubernetes.io/enforce: baseline
+    pod-security.kubernetes.io/audit: restricted
+    pod-security.kubernetes.io/warn: restricted

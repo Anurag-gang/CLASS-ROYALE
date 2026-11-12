@@ -30,11 +30,11 @@ The Class Royale backend acts as the core orchestration layer connecting:
                 ▼                             ▼
 ┌─────────────────────────────┐ ┌─────────────────────────────┐
 │     ML SERVICE CLIENT       │ │      AI PROVIDER LAYER      │
-│  POST /adaptive/next-action │ │  - Primary: OpenRouter LLM │
-│  Returns:                   │ │    (4.5s timeout protect)   │
-│  - Mastery % (e.g. 48%)     │ │  - Autonomous Fallback:     │
-│  - Action (LOWER_DIFFICULTY)│ │    Socratic Pedagogy Engine │
-│  - Feature Contributions    │ │    (First-principles & code)│
+│  POST /adaptive/next-action │ │  - Native Socratic Engine   │
+│  Returns:                   │ │    (Sub-10ms inference)     │
+│  - Mastery % (e.g. 48%)     │ │  - Autonomous Pedagogy:     │
+│  - Action (LOWER_DIFFICULTY)│ │    First-principles, code,  │
+│  - Feature Contributions    │ │    and adaptive scaffolding │
 └───────────────┬─────────────┘ └─────────────┬───────────────┘
                 │                             │
                 └──────────────┬──────────────┘
@@ -159,13 +159,9 @@ JWT_SECRET="class-royale-secret-key-8bit-retro-game-session-2026"
 # Next.js Environment
 NODE_ENV="development"
 
-# Class Royale Machine Learning Service
+# Class Royale Socratic & ML Configuration
+AI_PROVIDER="socratic"
 ML_SERVICE_URL="http://127.0.0.1:8000"
-
-# Optional Cloud LLM Provider (OpenRouter)
-OPENROUTER_API_KEY="your-api-key-here"
-OPENROUTER_MODEL="openai/gpt-4o-mini"
-OPENROUTER_BASE_URL="https://openrouter.ai/api/v1"
 ```
 
 ---

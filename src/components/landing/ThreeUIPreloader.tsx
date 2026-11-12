@@ -78,9 +78,8 @@ export function ThreeUIPreloader({ onComplete }: PreloaderProps) {
         >
           {/* Top Bar: Brand & Skip */}
           <div className="flex items-center justify-between w-full max-w-7xl mx-auto">
-            <div className="flex items-center gap-2.5 font-mono text-xs text-white/50 tracking-widest uppercase">
+            <div className="flex items-center gap-2.5">
               <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse shadow-[0_0_10px_#22d3ee]" />
-              <span>BOOT SEQUENCE // SYSTEM 2026</span>
             </div>
 
             <button
@@ -88,7 +87,7 @@ export function ThreeUIPreloader({ onComplete }: PreloaderProps) {
               onClick={handleComplete}
               className="px-4 py-1.5 rounded-full border border-white/10 hover:border-cyan-400/50 bg-white/[0.03] hover:bg-white/[0.08] text-white/60 hover:text-white font-mono text-[11px] tracking-wider uppercase transition-all"
             >
-              SKIP [SPACE]
+              SKIP
             </button>
           </div>
 
@@ -99,7 +98,7 @@ export function ThreeUIPreloader({ onComplete }: PreloaderProps) {
               <div className="absolute -inset-10 rounded-full bg-cyan-500/10 blur-3xl pointer-events-none" />
 
               {/* Individual Animated Letters */}
-              <h1 className="relative font-condensed font-black text-5xl sm:text-7xl md:text-8xl lg:text-9xl tracking-tight text-white uppercase flex items-center justify-center gap-1 sm:gap-2">
+              <h1 className="relative font-condensed font-black text-5xl sm:text-7xl md:text-8xl lg:text-9xl tracking-tight text-white uppercase flex items-baseline justify-center gap-1 sm:gap-2">
                 {titleChars.map((char, i) => (
                   <motion.span
                     key={i}
@@ -110,7 +109,7 @@ export function ThreeUIPreloader({ onComplete }: PreloaderProps) {
                       filter: progress > i * 7 ? "blur(0px)" : "blur(4px)",
                     }}
                     transition={{ duration: 0.4, ease: "easeOut" }}
-                    className={`inline-block will-change-transform ${
+                    className={`inline-block align-baseline will-change-transform ${
                       char === " " ? "w-4 sm:w-8" : ""
                     }`}
                     style={{
@@ -143,8 +142,7 @@ export function ThreeUIPreloader({ onComplete }: PreloaderProps) {
 
           {/* Bottom Bar: Precision Progress Bar & Numerical Value */}
           <div className="w-full max-w-7xl mx-auto space-y-3">
-            <div className="flex items-center justify-between font-mono text-xs text-white/50 tracking-wider">
-              <span>ACTIVE ADAPTIVE PROTOCOL</span>
+            <div className="flex items-center justify-end font-mono text-xs text-white/50 tracking-wider">
               <span className="text-white font-bold text-sm">
                 {progress < 10 ? `0${progress}` : progress}%
               </span>
