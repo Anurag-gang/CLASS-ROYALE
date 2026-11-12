@@ -2,20 +2,11 @@
  * Socrates Conversation History Drawer & Session Sidebar
  * File: src/components/socrates/SocratesSidebar.tsx
  *
- * Core Features:
- * 1. Date Grouping:
- *    - Categorizes sessions into "Pinned", "Today", "Yesterday", "Previous 7 Days", "Older".
- * 2. Real-Time Search Filter:
- *    - Substring search filtering sessions dynamically with clear button.
- * 3. Session Actions & In-Place Workflows:
- *    - Switch active session on click (active styling with electric cyan glow).
- *    - Inline rename with Enter to save and Escape to cancel.
- *    - Pin / unpin toggle with gold highlight.
- *    - Delete with inline two-step confirmation (prevents accidental data loss).
- *    - Bulk clear all dialectics with explicit confirmation modal.
- * 4. Responsive Drawer:
- *    - Desktop collapsible sidebar and mobile slide-over overlay with backdrop blur.
- * 5. Strict CR Intelligence Isolation: Zero CR dependencies.
+ * Implements clean, minimalist layout referencing ChatGPT conversation history:
+ * - "+ New chat" prominent action button
+ * - "Recents" conversation list with instant load & inline management (rename, pin, delete)
+ * - User profile pill at the bottom (Avatar, Name, Role)
+ * - Zero ChatGPT plugins/store or marketing bloat
  */
 
 "use client";
@@ -31,6 +22,8 @@ import {
   Trash2,
   Check,
   AlertTriangle,
+  PanelLeftClose,
+  Sparkles,
 } from "lucide-react";
 import {
   ConversationSummary,
@@ -55,11 +48,16 @@ export interface SocratesSidebarProps {
   onDeleteConversation: (id: string) => Promise<void> | void;
   onClearAllConversations: () => Promise<void> | void;
   isLoading?: boolean;
+  currentUser?: {
+    name?: string;
+    username?: string;
+    role?: string;
+  } | null;
   className?: string;
 }
 
 // =============================================================================
-// Pure Logic Helpers (Exported for Unit Testing & Reusability)
+// Pure Logic Helpers (Preserved for Unit Testing & Contract Adherence)
 // =============================================================================
 
 /**
@@ -94,6 +92,7 @@ export function SocratesSidebar({
   onDeleteConversation,
   onClearAllConversations,
   isLoading = false,
+  currentUser = null,
   className = "",
 }: SocratesSidebarProps) {
   const [searchQuery, setSearchQuery] = useState("");
@@ -121,7 +120,7 @@ export function SocratesSidebar({
     return groupConversationsByDate(filtered);
   }, [filtered]);
 
-  // Handle inline rename commit
+  // Commit rename
   const handleSaveRename = (id: string) => {
     const validated = validateConversationTitle(editTitle);
     if (validated.valid) {
@@ -162,78 +161,85 @@ export function SocratesSidebar({
 
   const bucketKeys: DateBucket[] = ["Pinned", "Today", "Yesterday", "Previous 7 Days", "Older"];
 
+  // Display user information
+  const displayName = currentUser?.name || currentUser?.username || "Anurag";
+  const userInitials = (displayName[0] || "A").toUpperCase();
+
   return (
     <>
       {/* Mobile Backdrop Overlay */}
       {isOpen && (
         <div
           onClick={onClose}
-          className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm md:hidden transition-opacity"
+          className="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm md:hidden transition-opacity"
           aria-hidden="true"
         />
       )}
 
-      {/* Drawer Container */}
+      {/* Sidebar Container */}
       <aside
-        className={`fixed md:relative top-0 bottom-0 left-0 z-50 md:z-20 w-80 max-w-[85vw]
-                   flex flex-col bg-[#070b14]/95 md:bg-[#070b14]/80 backdrop-blur-2xl
-                   border-r border-blue-900/30 text-slate-200 transition-transform duration-300 ease-in-out
+        className={`fixed md:relative top-0 bottom-0 left-0 z-50 md:z-20 w-64 max-w-[85vw]
+                   flex flex-col bg-[#0d0f12] text-zinc-300 border-r border-white/[0.08]
+                   transition-all duration-300 ease-in-out select-none
                    ${isOpen ? "translate-x-0" : "-translate-x-full md:hidden"} ${className}`}
         aria-label="Socrates Conversation Drawer"
       >
-        {/* Header: Title & Close Button */}
-        <div className="flex items-center justify-between p-4 border-b border-white/5 shrink-0">
+        {/* Header: Brand & Collapse Toggle */}
+        <div className="flex items-center justify-between px-3.5 pt-3.5 pb-2 shrink-0">
           <div className="flex items-center gap-2">
-            <div className="w-2.5 h-2.5 rounded-full bg-cyan-400 shadow-[0_0_8px_rgba(6,182,212,0.8)]" />
-            <h2 className="text-sm font-semibold tracking-wide text-slate-100 font-sans">
-              DIALECTIC HISTORY
-            </h2>
+            <Sparkles className="w-4 h-4 text-cyan-400" />
+            <span className="font-semibold text-white tracking-wide text-sm">
+              Socrates
+            </span>
           </div>
+
           <button
             type="button"
             onClick={onClose}
             aria-label="Close sidebar"
-            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 md:hidden cursor-pointer"
+            className="p-1.5 rounded-lg text-zinc-400 hover:text-white hover:bg-white/[0.06] transition-colors cursor-pointer"
           >
-            <X className="w-4 h-4" />
+            <PanelLeftClose className="w-4 h-4" />
           </button>
         </div>
 
-        {/* Action: New Dialectic Button */}
-        <div className="p-3 shrink-0">
+        {/* Primary Action: + New Chat */}
+        <div className="px-3 py-2 shrink-0">
           <button
             type="button"
             onClick={() => {
               onNewConversation();
               if (typeof window !== "undefined" && window.innerWidth < 768) onClose();
             }}
-            className="w-full py-2.5 px-4 rounded-xl flex items-center justify-center gap-2
-                       bg-gradient-to-r from-blue-600/30 to-cyan-600/30 hover:from-blue-600/50 hover:to-cyan-600/50
-                       border border-cyan-500/30 hover:border-cyan-400/60 text-cyan-300 font-medium text-xs font-mono
-                       transition-all duration-200 shadow-[0_0_15px_rgba(6,182,212,0.15)] cursor-pointer active:scale-98"
+            className="w-full py-2.5 px-3 rounded-xl flex items-center justify-between
+                       bg-[#181b21] hover:bg-[#20242c] border border-white/10 hover:border-white/20
+                       text-zinc-200 hover:text-white text-xs font-medium
+                       transition-all duration-150 cursor-pointer active:scale-98 shadow-sm"
           >
-            <Plus className="w-4 h-4" />
-            <span>NEW DIALECTIC</span>
+            <div className="flex items-center gap-2">
+              <Plus className="w-4 h-4 text-cyan-400" />
+              <span>New chat</span>
+            </div>
           </button>
         </div>
 
         {/* Search Bar */}
         <div className="px-3 pb-2 shrink-0">
           <div className="relative">
-            <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
+            <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-zinc-500" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search dialectics..."
-              className="w-full py-1.5 pl-8 pr-7 text-xs rounded-lg bg-slate-900/70 border border-white/5
-                         text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500/50"
+              placeholder="Search conversations..."
+              className="w-full py-1.5 pl-8 pr-7 text-xs rounded-lg bg-[#14171d] border border-white/5
+                         text-zinc-200 placeholder-zinc-500 focus:outline-none focus:border-cyan-500/40"
             />
             {searchQuery && (
               <button
                 type="button"
                 onClick={() => setSearchQuery("")}
-                className="absolute right-2 top-1/2 -translate-y-1/2 p-0.5 text-slate-400 hover:text-white cursor-pointer"
+                className="absolute right-2 top-1/2 -translate-y-1/2 p-0.5 text-zinc-400 hover:text-white cursor-pointer"
               >
                 <X className="w-3 h-3" />
               </button>
@@ -241,17 +247,17 @@ export function SocratesSidebar({
           </div>
         </div>
 
-        {/* Conversation List with Date Grouping */}
+        {/* Conversation History / Recents */}
         <div className="flex-1 overflow-y-auto px-2 py-1 space-y-4 text-xs font-sans">
           {isLoading && (
-            <div className="flex items-center justify-center py-6 text-slate-500 font-mono text-[11px]">
-              Loading sessions...
+            <div className="flex items-center justify-center py-6 text-zinc-500 text-xs">
+              Loading conversations...
             </div>
           )}
 
           {!isLoading && filtered.length === 0 && (
-            <div className="py-8 px-4 text-center text-slate-500 font-mono text-[11px]">
-              {searchQuery ? `No dialectics matching "${searchQuery}"` : "No dialectic history yet"}
+            <div className="py-8 px-3 text-center text-zinc-500 text-xs">
+              {searchQuery ? `No chats matching "${searchQuery}"` : "No saved chats yet"}
             </div>
           )}
 
@@ -261,11 +267,11 @@ export function SocratesSidebar({
               if (!items || items.length === 0) return null;
 
               return (
-                <div key={bucket} className="space-y-1">
+                <div key={bucket} className="space-y-0.5">
                   {/* Bucket Header */}
-                  <div className="px-2 py-1 text-[10px] font-mono font-semibold uppercase tracking-wider text-slate-500 flex items-center justify-between">
-                    <span>{bucket}</span>
-                    <span className="text-slate-600">{items.length}</span>
+                  <div className="px-2.5 py-1 text-[11px] font-medium text-zinc-400 uppercase tracking-wider flex items-center justify-between">
+                    <span>{bucket === "Pinned" ? "Pinned" : bucket === "Today" ? "Recents" : bucket}</span>
+                    <span className="text-zinc-600 text-[10px]">{items.length}</span>
                   </div>
 
                   {/* Bucket Session Items */}
@@ -283,20 +289,14 @@ export function SocratesSidebar({
                             if (typeof window !== "undefined" && window.innerWidth < 768) onClose();
                           }
                         }}
-                        className={`group relative flex items-center justify-between p-2 rounded-xl transition-all duration-150 cursor-pointer ${
+                        className={`group relative flex items-center justify-between px-2.5 py-2 rounded-lg transition-all duration-150 cursor-pointer ${
                           isActive
-                            ? "bg-blue-600/20 border border-cyan-500/40 text-cyan-200 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.1)]"
-                            : "hover:bg-slate-900/60 border border-transparent text-slate-300 hover:text-slate-100"
+                            ? "bg-[#1e2229] text-white font-medium shadow-sm"
+                            : "hover:bg-[#181b21] text-zinc-300 hover:text-zinc-100"
                         }`}
                       >
-                        {/* Title or Inline Edit */}
+                        {/* Title or Inline Rename */}
                         <div className="flex items-center gap-2 flex-1 min-w-0 pr-1">
-                          <MessageSquare
-                            className={`w-3.5 h-3.5 shrink-0 ${
-                              isActive ? "text-cyan-400" : "text-slate-500 group-hover:text-slate-400"
-                            }`}
-                          />
-
                           {isEditing ? (
                             <input
                               ref={editInputRef}
@@ -308,10 +308,10 @@ export function SocratesSidebar({
                                 if (e.key === "Escape") setEditingId(null);
                               }}
                               onBlur={() => handleSaveRename(conv.id)}
-                              className="w-full bg-slate-950 border border-cyan-500/50 rounded px-1.5 py-0.5 text-xs text-white focus:outline-none"
+                              className="w-full bg-black/60 border border-cyan-500/50 rounded px-1.5 py-0.5 text-xs text-white focus:outline-none"
                             />
                           ) : (
-                            <span className="truncate text-xs select-none">{conv.title}</span>
+                            <span className="truncate text-xs">{conv.title}</span>
                           )}
                         </div>
 
@@ -330,21 +330,21 @@ export function SocratesSidebar({
                               type="button"
                               onClick={handleCancelDelete}
                               title="Cancel"
-                              className="p-1 rounded bg-slate-800 text-slate-300 hover:text-white cursor-pointer"
+                              className="p-1 rounded bg-zinc-800 text-zinc-300 hover:text-white cursor-pointer"
                             >
                               <X className="w-3 h-3" />
                             </button>
                           </div>
                         ) : !isEditing ? (
-                          /* Hover Actions */
+                          /* Hover Action Buttons */
                           <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
                             {/* Pin / Unpin */}
                             <button
                               type="button"
                               onClick={(e) => handleTogglePin(e, conv)}
-                              title={conv.pinned ? "Unpin dialectic" : "Pin dialectic"}
+                              title={conv.pinned ? "Unpin" : "Pin"}
                               className={`p-1 rounded hover:bg-white/10 cursor-pointer ${
-                                conv.pinned ? "text-amber-400" : "text-slate-400"
+                                conv.pinned ? "text-amber-400" : "text-zinc-400"
                               }`}
                             >
                               <Pin className="w-3 h-3" />
@@ -354,8 +354,8 @@ export function SocratesSidebar({
                             <button
                               type="button"
                               onClick={(e) => handleStartRename(e, conv)}
-                              title="Rename dialectic"
-                              className="p-1 rounded text-slate-400 hover:text-white hover:bg-white/10 cursor-pointer"
+                              title="Rename"
+                              className="p-1 rounded text-zinc-400 hover:text-white hover:bg-white/10 cursor-pointer"
                             >
                               <Pencil className="w-3 h-3" />
                             </button>
@@ -364,15 +364,15 @@ export function SocratesSidebar({
                             <button
                               type="button"
                               onClick={(e) => handleStartDelete(e, conv.id)}
-                              title="Delete dialectic"
-                              className="p-1 rounded text-slate-400 hover:text-rose-400 hover:bg-white/10 cursor-pointer"
+                              title="Delete"
+                              className="p-1 rounded text-zinc-400 hover:text-rose-400 hover:bg-white/10 cursor-pointer"
                             >
                               <Trash2 className="w-3 h-3" />
                             </button>
                           </div>
                         ) : null}
 
-                        {/* Always visible pin badge if pinned and not hovered */}
+                        {/* Always visible pin indicator when not hovered */}
                         {conv.pinned && !isEditing && !isConfirmingDelete && (
                           <Pin className="w-3 h-3 text-amber-400 group-hover:hidden shrink-0 ml-1" />
                         )}
@@ -384,17 +384,14 @@ export function SocratesSidebar({
             })}
         </div>
 
-        {/* Footer: Bulk Clear All Dialectics */}
-        <div className="p-3 border-t border-white/5 shrink-0">
+        {/* Footer: User Account Profile Pill (Matching reference image bottom) */}
+        <div className="p-3 border-t border-white/[0.08] shrink-0 space-y-2">
           {showClearConfirm ? (
             <div className="space-y-2 p-2.5 rounded-xl bg-rose-950/40 border border-rose-800/40 text-rose-200">
               <div className="flex items-center gap-1.5 text-xs font-semibold">
                 <AlertTriangle className="w-3.5 h-3.5 text-rose-400" />
                 <span>Clear all history?</span>
               </div>
-              <p className="text-[11px] text-rose-300/80 leading-tight">
-                This will permanently delete all conversation dialectics.
-              </p>
               <div className="flex items-center gap-2 pt-1">
                 <button
                   type="button"
@@ -404,30 +401,44 @@ export function SocratesSidebar({
                   }}
                   className="flex-1 py-1 px-2 rounded-lg bg-rose-600 hover:bg-rose-500 text-white text-xs font-medium cursor-pointer"
                 >
-                  Confirm Clear
+                  Clear All
                 </button>
                 <button
                   type="button"
                   onClick={() => setShowClearConfirm(false)}
-                  className="py-1 px-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs cursor-pointer"
+                  className="py-1 px-2 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-xs cursor-pointer"
                 >
                   Cancel
                 </button>
               </div>
             </div>
           ) : (
-            <button
-              type="button"
-              onClick={() => setShowClearConfirm(true)}
-              disabled={conversations.length === 0}
-              className="w-full py-1.5 px-3 rounded-lg flex items-center justify-center gap-2
-                         text-[11px] font-mono text-slate-500 hover:text-rose-400 hover:bg-rose-950/20
-                         disabled:opacity-40 disabled:hover:text-slate-500 disabled:hover:bg-transparent
-                         transition-colors cursor-pointer"
-            >
-              <Trash2 className="w-3.5 h-3.5" />
-              <span>Clear all dialectics</span>
-            </button>
+            <div className="flex items-center justify-between gap-2 p-1.5 rounded-xl hover:bg-white/[0.04] transition-colors">
+              <div className="flex items-center gap-2.5 min-w-0">
+                <div className="w-8 h-8 rounded-full bg-zinc-800 border border-white/10 flex items-center justify-center text-xs font-semibold text-white shrink-0">
+                  {userInitials}
+                </div>
+                <div className="min-w-0">
+                  <div className="text-xs font-medium text-white truncate">
+                    {displayName}
+                  </div>
+                  <div className="text-[11px] text-zinc-400 truncate">
+                    {currentUser?.role || "Student"}
+                  </div>
+                </div>
+              </div>
+
+              {conversations.length > 0 && (
+                <button
+                  type="button"
+                  onClick={() => setShowClearConfirm(true)}
+                  title="Clear history"
+                  className="p-1.5 text-zinc-500 hover:text-rose-400 rounded-lg hover:bg-white/[0.06] transition-colors cursor-pointer"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                </button>
+              )}
+            </div>
           )}
         </div>
       </aside>

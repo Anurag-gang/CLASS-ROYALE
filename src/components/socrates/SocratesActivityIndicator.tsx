@@ -24,7 +24,7 @@ export function SocratesActivityIndicator({
     (stage === "grounding"
       ? "Searching academic curriculum invariants..."
       : stage === "inference"
-      ? `Connecting to ${modelName || "Qwen 30B"}...`
+      ? "Formulating dialectic reasoning..."
       : "Formulating dialectic response...");
 
   return (
@@ -64,12 +64,6 @@ export function SocratesActivityIndicator({
             {stage === "grounding" ? "GROUNDED" : "LIVE SSE"}
           </span>
         </div>
-
-        {modelName && stage === "inference" && (
-          <span className="text-[10px] font-mono text-zinc-500 truncate">
-            Inference engine: {modelName}
-          </span>
-        )}
       </div>
 
       {/* Synchronized Wave Dots */}

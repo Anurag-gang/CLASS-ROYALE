@@ -11,6 +11,7 @@ import { Section01Subjects } from "@/components/landing/Section01Subjects";
 import { ParallaxGallerySection } from "@/components/landing/ParallaxGallerySection";
 import { Section02Quizzes } from "@/components/landing/Section02Quizzes";
 import { Section03Adaptive } from "@/components/landing/Section03Adaptive";
+import { SocratesLandingSection } from "@/components/landing/SocratesLandingSection";
 import { Section04Mastery } from "@/components/landing/Section04Mastery";
 import { Section05Badges } from "@/components/landing/Section05Badges";
 import { Section06Clans } from "@/components/landing/Section06Clans";
@@ -62,6 +63,11 @@ export default function LandingPage() {
           <Section03Adaptive />
 
           <SectionConnectorStroke variant="curve-right" />
+
+          {/* Socrates AI Intellect Dialectic Section */}
+          <SocratesLandingSection />
+
+          <SectionConnectorStroke variant="curve-left" />
 
           {/* 04: Topic Mastery */}
           <Section04Mastery />

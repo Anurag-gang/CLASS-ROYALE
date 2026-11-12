@@ -36,6 +36,7 @@ const MENU_SECTIONS: MenuSection[] = [
   {
     category: "PLATFORM",
     links: [
+      { label: "Socrates AI", href: "/socrates", icon: Sparkles, desc: "Dialectic AI reasoning and code mastery" },
       { label: "Subjects & Syllabus", href: "/subjects", icon: BookOpen, desc: "" },
       { label: "How It Works", href: "/how-it-works", icon: Sparkles, desc: "" },
       { label: "AI Recommendations", href: "/recommendations", icon: Sparkles, desc: "" },
@@ -240,6 +241,16 @@ export function UnifiedNavbar() {
 
           {/* Streamlined Right Controls: User Session + Consolidated Menu Trigger */}
           <div className="flex items-center gap-3 sm:gap-4 text-xs font-mono uppercase tracking-wider">
+            {/* Direct Socrates Dialectic Link */}
+            <Link
+              href="/socrates"
+              onClick={() => retroSound.playClick()}
+              className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-400/30 hover:border-cyan-400/60 text-cyan-300 hover:text-white transition-all text-[11px] font-semibold tracking-wider shadow-[0_0_12px_rgba(6,182,212,0.12)]"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+              <span>SOCRATES AI</span>
+            </Link>
+
             {currentUser ? (
               <div className="flex items-center gap-2 sm:gap-3">
                 <Link

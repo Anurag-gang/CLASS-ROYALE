@@ -1,8 +1,26 @@
+/**
+ * Socrates AI Dialectic Workspace
+ * File: src/components/socrates/SocratesWorkspace.tsx
+ *
+ * Implements minimalist ChatGPT-inspired layout matching user reference image:
+ * - Left conversation history sidebar with "+ New chat", "Recents", and Student Profile
+ * - Center empty state: "Hey, {name}. Ready to dive in?"
+ * - Centered floating pill composer with model name displayed strictly and ONLY inside
+ * - 4 clean quick suggestions stacked below composer
+ * - Clean message stream: zero noisy metadata, zero small tags (no "YOU", no timestamps, no model badge in turns)
+ */
+
 "use client";
 
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
-import { Cpu, RotateCcw, Sparkles } from "lucide-react";
+import {
+  Sparkles,
+  RotateCcw,
+  Code2,
+  Zap,
+  BookOpen,
+} from "lucide-react";
 import { socratesTheme } from "./socratesTheme";
 import { SocratesHeader } from "./SocratesHeader";
 import { SocratesOfflineBanner } from "./SocratesOfflineBanner";
@@ -14,7 +32,13 @@ import { useSocratesChat } from "./useSocratesChat";
 
 export const SocratesWorkspace: React.FC = () => {
   const searchParams = useSearchParams();
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [currentUser, setCurrentUser] = useState<{
+    name?: string;
+    username?: string;
+    role?: string;
+  } | null>(null);
+
   const [modelInfo, setModelInfo] = useState<{
     model: string;
     endpoint: string;
@@ -52,6 +76,29 @@ export const SocratesWorkspace: React.FC = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const initialParamsHandledRef = useRef(false);
 
+  // Fetch current user info for personalized greeting
+  useEffect(() => {
+    fetch("/api/auth/me")
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (data?.user) {
+          setCurrentUser({
+            username: data.user.username,
+            role: data.user.role,
+            name: data.user.profile?.name || data.user.username,
+          });
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  // Responsive sidebar default
+  useEffect(() => {
+    if (typeof window !== "undefined" && window.innerWidth < 768) {
+      setSidebarOpen(false);
+    }
+  }, []);
+
   // Scroll to bottom when messages or active stage change
   const scrollToBottom = useCallback((smooth = true) => {
     messagesEndRef.current?.scrollIntoView({
@@ -64,7 +111,7 @@ export const SocratesWorkspace: React.FC = () => {
     scrollToBottom(true);
   }, [messages, activeStage, scrollToBottom]);
 
-  // Probe health on mount to detect model name & latency
+  // Probe health on mount
   const refreshHealth = useCallback(async () => {
     setRetryingHealth(true);
     try {
@@ -79,7 +126,7 @@ export const SocratesWorkspace: React.FC = () => {
       }
       await checkColibriHealth();
     } catch {
-      // offline handled by checkColibriHealth
+      // handled by checkColibriHealth
     } finally {
       setRetryingHealth(false);
     }
@@ -89,7 +136,7 @@ export const SocratesWorkspace: React.FC = () => {
     refreshHealth();
   }, [refreshHealth]);
 
-  // Handle inbound query parameters (from Quiz Engine or external links)
+  // Handle inbound query parameters
   useEffect(() => {
     if (initialParamsHandledRef.current) return;
 
@@ -106,38 +153,41 @@ export const SocratesWorkspace: React.FC = () => {
     }
   }, [searchParams, messages.length, isStreaming, sendMessage]);
 
-  // Curated starter dialectics for empty state
-  const starterQuestions = [
+  // Clean suggestion prompts matching reference image
+  const suggestionItems = [
     {
-      title: "Complexity & Asymptotics",
-      prompt: "Analyze the time and space complexity of QuickSelect versus Median-of-Medians with mathematical proof.",
+      icon: Code2,
+      label: "Write or debug code",
+      prompt: "Analyze this code for bugs, edge cases, and memory invariants:\n\n",
     },
     {
-      title: "Data Structure Invariants",
-      prompt: "Explain how Red-Black Tree rotation invariants guarantee O(log n) maximum search depth.",
+      icon: Sparkles,
+      label: "Explain a complex concept",
+      prompt: "Explain the fundamental intuition and mathematical invariants of ",
     },
     {
-      title: "System Architecture",
-      prompt: "Contrast the architectural tradeoffs between LSM-Trees and B-Trees in write-heavy storage engines.",
+      icon: Zap,
+      label: "Algorithm complexity & Big-O",
+      prompt: "Analyze the time and space complexity of this algorithm with big-O notation:\n\n",
     },
     {
-      title: "Code Debugging & Verification",
-      prompt: "What memory invariants must be preserved when implementing a lock-free queue with atomic compare-and-swap?",
+      icon: BookOpen,
+      label: "Search academic curriculum",
+      prompt: "What are the core syllabus topics and proofs required for ",
     },
   ];
 
+  // Format model name: strictly displayed only in the composer pill
+  const modelDisplayName = modelInfo.model.toLowerCase().includes("30b")
+    ? "Qwen 30B"
+    : modelInfo.model.split("/").pop()?.replace(/-colibri$/, "") || "Qwen 30B";
+
+  const studentName = currentUser?.name || currentUser?.username || "Anurag";
+
   return (
     <div className={`fixed inset-0 z-50 h-screen w-full flex flex-col overflow-hidden ${socratesTheme.canvas}`}>
-      {/* Ambient Lighting & Technical Grid Overlay */}
-      <div className={socratesTheme.ambientGlowTop} />
-      <div className={socratesTheme.ambientGlowBottom} />
-      <div className={socratesTheme.techGrid} />
-
       {/* Workspace Header */}
       <SocratesHeader
-        modelName={modelInfo.model}
-        isOnline={!isOffline}
-        latencyMs={modelInfo.latencyMs}
         sidebarOpen={sidebarOpen}
         onToggleSidebar={() => setSidebarOpen((v) => !v)}
         onNewChat={newConversation}
@@ -167,70 +217,72 @@ export const SocratesWorkspace: React.FC = () => {
           onDeleteConversation={deleteConversation}
           onClearAllConversations={clearAllConversations}
           isLoading={isLoadingHistory}
+          currentUser={currentUser}
         />
 
-        {/* Central Chat Stream & Scroll Area */}
-        <main className="relative flex flex-1 flex-col overflow-hidden">
-          {/* Scrollable Message History Area */}
-          <div className="flex-1 overflow-y-auto px-4 sm:px-8 py-6 space-y-6">
-            {messages.length === 0 ? (
-              /* Empty State Hero Dialectic Launcher */
-              <div className="min-h-[70vh] flex flex-col items-center justify-center text-center max-w-2xl mx-auto py-12 px-4 select-none">
-                <div className="relative mb-6">
-                  <div className="w-16 h-16 rounded-2xl bg-cyan-500/10 border border-cyan-400/30 flex items-center justify-center shadow-[0_0_30px_rgba(6,182,212,0.3)]">
-                    <span className="font-condensed font-black text-3xl text-cyan-300">Σ</span>
-                  </div>
-                  <span className="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-cyan-400 shadow-[0_0_8px_#22d3ee] animate-pulse" />
+        {/* Central Chat Stream & Canvas */}
+        <main className="relative flex flex-1 flex-col overflow-hidden bg-[#0d0f12]">
+          {messages.length === 0 ? (
+            /* Empty State Layout (Matching Reference Image) */
+            <div className="flex-1 overflow-y-auto flex flex-col items-center justify-center px-4 py-8 select-none">
+              <div className="w-full max-w-2xl mx-auto flex flex-col items-center space-y-7">
+                {/* Greeting: "Hey, {name}. Ready to dive in?" */}
+                <h1 className="text-2xl sm:text-3xl font-medium text-white tracking-tight text-center font-sans">
+                  Hey, {studentName}. Ready to dive in?
+                </h1>
+
+                {/* Floating Centered Pill Composer */}
+                <div className="w-full">
+                  <SocratesComposer
+                    value={input}
+                    onChange={setInput}
+                    onSubmit={(text) => sendMessage(text)}
+                    onStop={stopGeneration}
+                    isStreaming={isStreaming}
+                    isLoading={isLoading}
+                    disabled={isOffline}
+                    placeholder="Ask Socrates..."
+                    modelDisplayName={modelDisplayName}
+                  />
                 </div>
 
-                <h1 className="font-condensed font-black tracking-widest text-white text-2xl sm:text-3xl uppercase mb-2">
-                  SOCRATES DIALECTIC ENGINE
-                </h1>
-                <p className="text-slate-400 text-xs sm:text-sm max-w-lg mb-8 leading-relaxed font-sans">
-                  Inquiry-guided computer science mastery powered by local Qwen 30B inference.
-                  Explore proofs, algorithm invariants, systems architecture, and code verification.
-                </p>
-
-                {/* Quick starter cards */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full text-left">
-                  {starterQuestions.map((q, idx) => (
-                    <button
-                      key={idx}
-                      type="button"
-                      onClick={() => sendMessage(q.prompt)}
-                      disabled={isOffline || isLoading}
-                      className="p-3.5 rounded-xl bg-[#080d1a]/60 hover:bg-[#0c1428]/80 border border-white/[0.06] hover:border-cyan-500/30 transition-all text-left group cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      <div className="flex items-center gap-1.5 text-xs font-mono text-cyan-400 mb-1">
-                        <Sparkles className="w-3 h-3 text-cyan-400 group-hover:animate-spin" />
-                        <span>{q.title}</span>
-                      </div>
-                      <p className="text-xs text-slate-300 line-clamp-2 leading-relaxed">
-                        {q.prompt}
-                      </p>
-                    </button>
-                  ))}
+                {/* Suggestions List (Clean stacked items with subtle icons) */}
+                <div className="w-full max-w-xl space-y-2 pt-1">
+                  {suggestionItems.map((item, idx) => {
+                    const Icon = item.icon;
+                    return (
+                      <button
+                        key={idx}
+                        type="button"
+                        onClick={() => {
+                          setInput(item.prompt);
+                        }}
+                        disabled={isOffline || isLoading}
+                        className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl
+                                   text-zinc-400 hover:text-zinc-100 hover:bg-white/[0.04]
+                                   transition-colors text-left text-sm cursor-pointer disabled:opacity-50"
+                      >
+                        <Icon className="w-4 h-4 text-zinc-400 shrink-0" />
+                        <span className="font-sans">{item.label}</span>
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
-            ) : (
-              /* Message Stream Turns */
-              <div className="max-w-4xl mx-auto space-y-6">
+            </div>
+          ) : (
+            /* Active Conversation Message Stream */
+            <div className="flex-1 overflow-y-auto px-4 sm:px-8 py-6 space-y-6">
+              <div className="max-w-3xl mx-auto space-y-6">
                 {messages.map((m) => {
                   const isUser = m.role === "user";
 
                   if (isUser) {
                     return (
                       <div key={m.id} className="flex justify-end">
+                        {/* Clean User Bubble — No "YOU", no timestamps */}
                         <div className={`max-w-[85%] sm:max-w-[75%] ${socratesTheme.userBubble}`}>
-                          <div className="text-xs font-mono text-cyan-300 mb-1 flex items-center justify-between gap-4">
-                            <span>YOU</span>
-                            {m.createdAt && (
-                              <span className="text-[10px] text-cyan-400/60">
-                                {new Date(m.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
-                              </span>
-                            )}
-                          </div>
-                          <div className="text-sm text-slate-100 whitespace-pre-wrap leading-relaxed">
+                          <div className="text-sm text-zinc-100 whitespace-pre-wrap leading-relaxed">
                             {m.content}
                           </div>
                         </div>
@@ -238,32 +290,10 @@ export const SocratesWorkspace: React.FC = () => {
                     );
                   }
 
-                  // Assistant Turn
+                  // Assistant Turn — Clean Markdown, zero noisy headers/badges
                   return (
-                    <div key={m.id} className="flex justify-start w-full">
-                      <div className={`w-full ${socratesTheme.assistantTurn}`}>
-                        {/* Turn Header */}
-                        <div className="flex items-center justify-between pb-3 mb-3 border-b border-white/[0.06] text-xs font-mono">
-                          <div className="flex items-center gap-2">
-                            <span className="w-2 h-2 rounded-full bg-cyan-400 shadow-[0_0_8px_#22d3ee] animate-pulse" />
-                            <span className="font-semibold text-white tracking-wider">
-                              SOCRATES
-                            </span>
-                            <span className="text-[10px] text-zinc-500 hidden sm:inline">
-                              // {m.model || modelInfo.model}
-                            </span>
-                          </div>
-
-                          <div className="flex items-center gap-2 text-zinc-500 text-[11px]">
-                            {m.tokens !== undefined && m.tokens > 0 && (
-                              <span className="px-1.5 py-0.5 rounded bg-white/[0.04] border border-white/5 font-mono">
-                                {m.tokens} tokens
-                              </span>
-                            )}
-                          </div>
-                        </div>
-
-                        {/* Turn Content via Markdown AST Engine */}
+                    <div key={m.id} className="flex justify-start w-full py-1">
+                      <div className="w-full text-zinc-100 text-sm leading-relaxed font-sans">
                         {m.content ? (
                           <SocratesMarkdown content={m.content} isStreaming={m.isStreaming} />
                         ) : m.isStreaming ? (
@@ -278,7 +308,6 @@ export const SocratesWorkspace: React.FC = () => {
                           <SocratesActivityIndicator
                             stage={activeStage.stage}
                             stageText={activeStage.text}
-                            modelName={modelInfo.model}
                           />
                         )}
                       </div>
@@ -288,7 +317,7 @@ export const SocratesWorkspace: React.FC = () => {
 
                 {/* Display Error Message with Retry */}
                 {error && (
-                  <div className="p-4 rounded-xl bg-rose-950/40 border border-rose-800/40 text-rose-200 text-xs flex items-center justify-between gap-3">
+                  <div className="p-3.5 rounded-xl bg-rose-950/40 border border-rose-800/40 text-rose-200 text-xs flex items-center justify-between gap-3">
                     <div>
                       <span className="font-semibold">Dialectic Error: </span>
                       <span>{error.message}</span>
@@ -306,21 +335,25 @@ export const SocratesWorkspace: React.FC = () => {
 
                 <div ref={messagesEndRef} className="h-4" />
               </div>
-            )}
-          </div>
+            </div>
+          )}
 
-          {/* Sticky Floating Glass Composer */}
-          <div className="shrink-0 bg-gradient-to-t from-[#02040a] via-[#02040a]/90 to-transparent pt-3">
-            <SocratesComposer
-              value={input}
-              onChange={setInput}
-              onSubmit={(text) => sendMessage(text)}
-              onStop={stopGeneration}
-              isStreaming={isStreaming}
-              isLoading={isLoading}
-              disabled={isOffline}
-            />
-          </div>
+          {/* Sticky Floating Glass Composer (Active Chat State) */}
+          {messages.length > 0 && (
+            <div className="shrink-0 bg-gradient-to-t from-[#0d0f12] via-[#0d0f12]/95 to-transparent pt-3 pb-2">
+              <SocratesComposer
+                value={input}
+                onChange={setInput}
+                onSubmit={(text) => sendMessage(text)}
+                onStop={stopGeneration}
+                isStreaming={isStreaming}
+                isLoading={isLoading}
+                disabled={isOffline}
+                placeholder="Ask Socrates..."
+                modelDisplayName={modelDisplayName}
+              />
+            </div>
+          )}
         </main>
       </div>
     </div>
