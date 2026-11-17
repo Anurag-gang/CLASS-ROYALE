@@ -46,7 +46,9 @@ async function runLiveVerification() {
   // Step 2: Next.js /api/socrates/health route check
   console.log("\n--- 2. Invoking Next.js /api/socrates/health Handler ---");
   try {
-    const res = await healthHandler();
+    const res = await healthHandler(
+      new NextRequest("http://localhost:3000/api/socrates/health")
+    );
     const data = await res.json();
     console.log("  HTTP Status:", res.status);
     console.log("  Response Body:", JSON.stringify(data, null, 2));

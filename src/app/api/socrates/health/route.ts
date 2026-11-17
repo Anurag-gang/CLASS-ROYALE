@@ -31,7 +31,7 @@ export interface SocratesHealthResponse {
   details?: Record<string, unknown>;
 }
 
-export async function GET(req?: NextRequest) {
+export async function GET(req: NextRequest) {
   try {
     const health = await colibriClient.checkHealth();
 

@@ -1,0 +1,84 @@
+# ==============================================================================
+# Class Royale Full-Stack Production & Staging Orchestration
+# Services:
+#   1. web-app (Next.js 16 Standalone Container, Port 3000)
+#   2. ml-service (FastAPI Adaptive Bayesian Knowledge Tracing Engine, Port 8000)
+# ==============================================================================
+
+version: '3.8'
+
+services:
+  # ---------------------------------------------------------------------------
+  # 1. Next.js 16 Production Web Application & Socratic Dialectic Interface
+  # ---------------------------------------------------------------------------
+  web-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: class-royale-web-app
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - HOSTNAME=0.0.0.0
+      - DATABASE_URL=file:/app/prisma/dev.db
+      - JWT_SECRET=${JWT_SECRET:-production-jwt-secret-replace-in-env}
+      - AI_PROVIDER=colibri
+      - COLIBRI_BASE_URL=${COLIBRI_BASE_URL:-http://host.docker.internal:8080/v1}
+      - COLIBRI_MODEL=${COLIBRI_MODEL:-qwen3-coder-30b}
+      - ML_SERVICE_URL=http://ml-service:8000
+      - AI_ENABLE_STREAMING=true
+    volumes:
+      # Persistent SQLite volume for student progress preservation
+      - class-royale-db-data:/app/prisma
+    depends_on:
+      ml-service:
+        condition: service_healthy
+    networks:
+      - class-royale-net
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  # ---------------------------------------------------------------------------
+  # 2. FastAPI Adaptive Supervised ML Microservice
+  # ---------------------------------------------------------------------------
+  ml-service:
+    build:
+      context: ./ml-service
+      dockerfile: Dockerfile
+    container_name: class-royale-ml-service
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - ML_ENV=production
+      - ML_MODE=active
+      - DEMO_MODE=false
+      - LOG_LEVEL=INFO
+      - API_HOST=0.0.0.0
+      - API_PORT=8000
+    volumes:
+      - class-royale-ml-artifacts:/app/artifacts
+      - class-royale-ml-datasets:/app/datasets
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://127.0.0.1:8000/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    networks:
+      - class-royale-net
+
+volumes:
+  class-royale-db-data:
+    driver: local
+  class-royale-ml-artifacts:
+    driver: local
+  class-royale-ml-datasets:
+    driver: local
+
+networks:
+  class-royale-net:
+    driver: bridge

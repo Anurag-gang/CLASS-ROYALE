@@ -1,0 +1,101 @@
+name: Class Royale Continuous Integration & Deployment Pipeline
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  # ---------------------------------------------------------------------------
+  # Stage 1: Validation, Typechecking & Static Analysis
+  # ---------------------------------------------------------------------------
+  validate:
+    name: Code Validation & TypeScript Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Generate Prisma Client
+        run: npx prisma generate
+
+      - name: TypeScript Type Check
+        run: npx tsc --noEmit
+
+  # ---------------------------------------------------------------------------
+  # Stage 2: Automated Testing & Invariant Preservation
+  # ---------------------------------------------------------------------------
+  test:
+    name: Automated Tests & Data Preservation
+    needs: validate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Generate Prisma Client
+        run: npx prisma generate
+
+      - name: Student Data Preservation Invariant (100% Intact)
+        run: npm run test:preservation
+
+      - name: Socrates UI Component Unit Tests (33 Scenarios)
+        run: npx tsx tests/tier1-feature/socratesUIComponents.test.ts
+
+      - name: Socratic Evaluation Scenarios Suite (15 Scenarios)
+        run: npx tsx scripts/verify_socrates_suite.ts
+
+  # ---------------------------------------------------------------------------
+  # Stage 3: Production Build & Standalone Bundle
+  # ---------------------------------------------------------------------------
+  build:
+    name: Next.js Standalone Production Build
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Generate Prisma Client
+        run: npx prisma generate
+
+      - name: Build Next.js Application
+        env:
+          NODE_ENV: production
+          NEXT_TELEMETRY_DISABLED: 1
+        run: npm run build
+
+      - name: Verify Standalone Runner Artifacts
+        run: |
+          test -f .next/standalone/server.js || (echo "Missing standalone server.js" && exit 1)
+          test -d .next/static || (echo "Missing static assets" && exit 1)
+          echo "Production standalone artifacts successfully generated."

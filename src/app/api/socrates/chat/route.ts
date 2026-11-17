@@ -50,8 +50,8 @@ export const runtime = "nodejs";
 // Initialize singleton ColibriClient
 const colibriClient = new ColibriClient();
 
-// Default Socratic System Prompt (exported for backward compatibility)
-export const DEFAULT_SOCRATES_PROMPT = SOCRATES_BASE_SYSTEM_PROMPT;
+// Default Socratic System Prompt (local reference)
+const DEFAULT_SOCRATES_PROMPT = SOCRATES_BASE_SYSTEM_PROMPT;
 
 export async function POST(req: NextRequest) {
   try {
