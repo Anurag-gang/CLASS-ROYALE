@@ -1,0 +1,33 @@
+# ==============================================================================
+# Class Royale: Render Blueprint Infrastructure as Code (IaC)
+# Deploys the Python FastAPI Machine Learning Microservice to Render
+# Docs: https://render.com/docs/blueprint-spec
+# ==============================================================================
+
+version: "1"
+
+services:
+  # ---------------------------------------------------------------------------
+  # Class Royale Supervised Machine Learning Microservice
+  # ---------------------------------------------------------------------------
+  - type: web
+    name: class-royale-ml-backend
+    runtime: python
+    region: oregon
+    plan: free
+    rootDir: ml-service
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: ML_ENV
+        value: production
+      - key: ML_MODE
+        value: active
+      - key: DEMO_MODE
+        value: "false"
+      - key: LOG_LEVEL
+        value: INFO
